@@ -13,45 +13,28 @@ class MyApp extends StatelessWidget {
       title: 'What Did I Miss',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.light (
-          primary: #4A90E2
-          secondary: #6A7BA2
-          tertiary: #A6B8E0
-          alternate: #ECEFF4
-          primarytext: #1F2937
-          secondarytext: #6B7280
-          primarybackground: #F8FAFC
-          secondarybackground: #E5EAF0
-          accent1: #FFAD5A
-          accent2: #57D8A4
-          accent3: #7F5AF0
-          accent4: #FFD166
-          success: #10B981
-          error: #EF4444
-          warning: #F59E0B
-          info: #3B82F6
-        ),
-        theme: ThemeData(
-          colorScheme: ColorScheme.dark (
-          primary: #60a5fa
-          secondary: #9ca3af
-          tertiary: #3b3f54
-          alternate: #111827
-          primarytext: #F9FAFB
-          secondarytext: #D1D5DB
-          primarybackground: #111827
-          secondarybackground: #1E2533
-          accent1: #FDBA74
-          accent2: #34D399
-          accent3: #C084FC
-          accent4: #FCD34D
-          success: #22C55E
-          error: #F87171
-          warning: #FBBF24
-          info: #60A5FA
-          )
         useMaterial3: true,
+        colorScheme: const ColorScheme.light(
+          primary: _LightAppColors.primary,
+          secondary: _LightAppColors.secondary,
+          tertiary: _LightAppColors.tertiary,
+          background: _LightAppColors.primaryBackground,
+          surface: _LightAppColors.secondaryBackground,
+          error: _LightAppColors.error,
+        ),
       ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        colorScheme: const ColorScheme.dark(
+          primary: _DarkAppColors.primary,
+          secondary: _DarkAppColors.secondary,
+          tertiary: _DarkAppColors.tertiary,
+          background: _DarkAppColors.primaryBackground,
+          surface: _DarkAppColors.secondaryBackground,
+          error: _DarkAppColors.error,
+        ),
+      ),
+      themeMode: ThemeMode.system,
       home: const HomeScreen(),
     );
   }
@@ -67,6 +50,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('What Did I Miss?'),
+        backgroundColor: theme.colorScheme.tertiary,
       ),
       body: Center(
         child: ConstrainedBox(
@@ -197,4 +181,42 @@ class _HomeInfoCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _LightAppColors {
+  static const primary = Color(0xFF4A90E2);
+  static const secondary = Color(0xFF6A7BA2);
+  static const tertiary = Color(0xFFA6B8E0);
+  static const alternate = Color(0xFFECEFF4);
+  static const primaryText = Color(0xFF1F2937);
+  static const secondaryText = Color(0xFF6B7280);
+  static const primaryBackground = Color(0xFFF8FAFC);
+  static const secondaryBackground = Color(0xFFE5EAF0);
+  static const accent1 = Color(0xFFFFAD5A);
+  static const accent2 = Color(0xFF57D8A4);
+  static const accent3 = Color(0xFF7F5AF0);
+  static const accent4 = Color(0xFFFFD166);
+  static const success = Color(0xFF10B981);
+  static const error = Color(0xFFEF4444);
+  static const warning = Color(0xFFF59E0B);
+  static const info = Color(0xFF3B82F6);
+}
+
+class _DarkAppColors {
+  static const primary = Color(0xFF60A5FA);
+  static const secondary = Color(0xFF9CA3AF);
+  static const tertiary = Color(0xFF3B3F54);
+  static const alternate = Color(0xFF111827);
+  static const primaryText = Color(0xFFF9FAFB);
+  static const secondaryText = Color(0xFFD1D5DB);
+  static const primaryBackground = Color(0xFF111827);
+  static const secondaryBackground = Color(0xFF1E2533);
+  static const accent1 = Color(0xFFFDBA74);
+  static const accent2 = Color(0xFF34D399);
+  static const accent3 = Color(0xFFC084FC);
+  static const accent4 = Color(0xFFFCD34D);
+  static const success = Color(0xFF22C55E);
+  static const error = Color(0xFFF87171);
+  static const warning = Color(0xFFFBBF24);
+  static const info = Color(0xFF60A5FA);
 }
