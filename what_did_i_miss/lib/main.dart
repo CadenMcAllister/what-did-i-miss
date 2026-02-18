@@ -43,7 +43,6 @@ class MyApp extends StatelessWidget {
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,10 +76,8 @@ class HomeScreen extends StatelessWidget {
                   style: TextStyle(
                     fontFamily: 'Inter Tight',
                     fontSize: 64,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                     color: _DarkAppColors.primaryText,
-                    letterSpacing: -1.0,
-                    height: 1.1,
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -100,7 +97,9 @@ class HomeScreen extends StatelessWidget {
                 // Get Started Button
                 FilledButton(
                   onPressed: () {
-                    // TODO: Navigate to signup/login
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                    );
                   },
                   style: FilledButton.styleFrom(
                     backgroundColor: _DarkAppColors.primary,
@@ -150,6 +149,50 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: _DarkAppColors.secondaryBackground,
+      body: Column (
+        children: [ Container (
+          width: double.infinity,
+          height: 230,
+          margin: const EdgeInsets.only(left: 32, right: 32, top: 12, bottom: 32),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: _DarkAppColors.primaryBackground,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 8,
+              ),
+            ],
+          ),
+            child: Text(
+              'What Did I Miss?',
+              style: TextStyle(
+                fontFamily: 'Inter Tight',
+                fontSize: 44,
+              fontWeight: FontWeight.w600,
+              color: _DarkAppColors.primaryText,
+            ),
+          ),
+        )
+        ]
+      )
     );
   }
 }
