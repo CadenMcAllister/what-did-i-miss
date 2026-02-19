@@ -163,36 +163,110 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _DarkAppColors.secondaryBackground,
-      body: Column (
-        children: [ Container (
-          width: double.infinity,
-          height: 230,
-          margin: const EdgeInsets.only(left: 32, right: 32, top: 12, bottom: 32),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: _DarkAppColors.primaryBackground,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 8,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        backgroundColor: _DarkAppColors.secondaryBackground,
+        body: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              height: 230,
+              margin: const EdgeInsets.only(left: 32, right: 32, top: 12, bottom: 32),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: _DarkAppColors.primaryBackground,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 8,
+                  ),
+                ],
               ),
-            ],
-          ),
-            child: Text(
-              'What Did I Miss?',
-              style: TextStyle(
-                fontFamily: 'Inter Tight',
-                fontSize: 44,
-              fontWeight: FontWeight.w600,
-              color: _DarkAppColors.primaryText,
+              child: Text(
+                'What Did I Miss?',
+                style: TextStyle(
+                  fontFamily: 'Inter Tight',
+                  fontSize: 44,
+                  fontWeight: FontWeight.w600,
+                  color: _DarkAppColors.primaryText,
+                ),
+              ),
             ),
-          ),
-        )
-        ]
-      )
+            Container(
+              width: 600,
+              margin: const EdgeInsets.symmetric(horizontal: 32),
+              decoration: BoxDecoration(
+                color: _DarkAppColors.secondaryBackground,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: _DarkAppColors.primaryBackground, width: 2),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  TabBar(
+                    dividerColor: _DarkAppColors.tertiary,
+                    labelPadding: EdgeInsets.symmetric(horizontal: 32),
+                    padding: const EdgeInsets.only(top: 12),
+                    tabAlignment: TabAlignment.center,
+                    tabs: [
+                      Tab(child: Text('Create Account', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600))),
+                      Tab(child: Text('Login', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600))),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 400,
+                    child: TabBarView(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 24, right: 24, top: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 230,
+                                height: 40,
+                                alignment: Alignment.topLeft,
+                                decoration: BoxDecoration(
+                                  color: _DarkAppColors.secondaryBackground,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              Text('Create Account', style:
+                                TextStyle(
+                                  color: _DarkAppColors.primaryText,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w600
+                                  )
+                                ),
+                              Text('Let\'s get started by filling out the form below.', style: 
+                                TextStyle(
+                                  color: _DarkAppColors.secondaryText, 
+                                  fontSize: 14, 
+                                  fontWeight: FontWeight.w400, 
+                                  fontFamily: 'Inter'
+                                )
+                              )
+                            ],
+                          ),
+                        ),
+                        Center(child: Text('Login Tab', style: TextStyle(color: _DarkAppColors.primaryText))),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
