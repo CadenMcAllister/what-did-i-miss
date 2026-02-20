@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../app/app_constants.dart';
 import '../app/routes.dart';
 import '../app/theme_mode_scope.dart';
 import '../theme/app_colors.dart';
@@ -14,7 +15,7 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: AppColors.of(context).primaryBackground,
       appBar: AppBar(
         title: const Text(
-          'What Did I Miss?',
+          appName,
           style: TextStyle(
             fontFamily: 'Inter Tight',
           ),
@@ -76,11 +77,14 @@ class HomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 40),
                     // Get Started Button
-                    FilledButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, AppRoutes.login);
-                      },
-                      style: FilledButton.styleFrom(
+                    Semantics(
+                      button: true,
+                      label: 'Get Started',
+                      child: FilledButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, AppRoutes.login);
+                        },
+                        style: FilledButton.styleFrom(
                         backgroundColor: AppColors.of(context).primary,
                         foregroundColor: AppColors.of(context).primaryText,
                         padding: const EdgeInsets.symmetric(
@@ -92,11 +96,12 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       child: const Text(
-                        'Get Started',
-                        style: TextStyle(
-                          fontFamily: 'Inter Tight',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                          'Get Started',
+                          style: TextStyle(
+                            fontFamily: 'Inter Tight',
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),

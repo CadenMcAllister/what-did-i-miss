@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../app/app_constants.dart';
 import '../app/routes.dart';
 import '../theme/app_colors.dart';
 import '../widgets/login_form.dart';
@@ -14,7 +15,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool _obscurePassword = true;
+  bool _obscureSignUpPassword = true;
+  bool _obscureLoginPassword = true;
   bool _isSigningUp = false;
   bool _isLoggingIn = false;
   bool _isResettingPassword = false;
@@ -30,6 +32,25 @@ class _LoginPageState extends State<LoginPage> {
     _loginEmailController.dispose();
     _loginPasswordController.dispose();
     super.dispose();
+  }
+
+  void _onAuthError(Object e, StackTrace st, String debugLabel) {
+    if (!mounted) return;
+    final message =
+        e is Exception ? e.toString() : 'Something went wrong. Please try again.';
+    showAppSnackBar(context, message, tone: SnackBarTone.error);
+    assert(() {
+      debugPrintStack(stackTrace: st, label: debugLabel);
+      return true;
+    }());
+  }
+
+  void _toggleSignUpPassword() {
+    setState(() => _obscureSignUpPassword = !_obscureSignUpPassword);
+  }
+
+  void _toggleLoginPassword() {
+    setState(() => _obscureLoginPassword = !_obscureLoginPassword);
   }
 
   Future<void> _signUp() async {
@@ -84,13 +105,7 @@ class _LoginPageState extends State<LoginPage> {
       }
       showAppSnackBar(context, error.message, tone: SnackBarTone.error);
     } catch (e, st) {
-      if (!mounted) return;
-      final message = e is Exception ? e.toString() : 'Something went wrong. Please try again.';
-      showAppSnackBar(context, message, tone: SnackBarTone.error);
-      assert(() {
-        debugPrintStack(stackTrace: st, label: 'SignUp error');
-        return true;
-      }());
+      _onAuthError(e, st, 'SignUp error');
     } finally {
       if (mounted) {
         setState(() {
@@ -127,13 +142,7 @@ class _LoginPageState extends State<LoginPage> {
       if (!mounted) return;
       showAppSnackBar(context, error.message, tone: SnackBarTone.error);
     } catch (e, st) {
-      if (!mounted) return;
-      final message = e is Exception ? e.toString() : 'Something went wrong. Please try again.';
-      showAppSnackBar(context, message, tone: SnackBarTone.error);
-      assert(() {
-        debugPrintStack(stackTrace: st, label: 'SignIn error');
-        return true;
-      }());
+      _onAuthError(e, st, 'SignIn error');
     } finally {
       if (mounted) {
         setState(() {
@@ -165,13 +174,7 @@ class _LoginPageState extends State<LoginPage> {
       if (!mounted) return;
       showAppSnackBar(context, error.message, tone: SnackBarTone.error);
     } catch (e, st) {
-      if (!mounted) return;
-      final message = e is Exception ? e.toString() : 'Something went wrong. Please try again.';
-      showAppSnackBar(context, message, tone: SnackBarTone.error);
-      assert(() {
-        debugPrintStack(stackTrace: st, label: 'Password reset error');
-        return true;
-      }());
+      _onAuthError(e, st, 'Password reset error');
     } finally {
       if (mounted) {
         setState(() {
@@ -189,196 +192,259 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: AppColors.of(context).secondaryBackground,
         body: Column(
           children: [
-            Container(
-              width: double.infinity,
-              height: 230,
-              margin: const EdgeInsets.only(left: 32, right: 32, top: 12, bottom: 32),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: AppColors.of(context).primaryBackground,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.2),
-                    blurRadius: 8,
-                  ),
-                ],
+            const _LoginHeader(),
+            _LoginTabCard(state: this),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LoginHeader extends StatelessWidget {
+  const _LoginHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 230,
+      margin: const EdgeInsets.only(left: 32, right: 32, top: 12, bottom: 32),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: AppColors.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.2),
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: Text(
+            appName,
+            style: TextStyle(
+              fontFamily: 'Inter Tight',
+              fontSize: 44,
+              fontWeight: FontWeight.w600,
+              color: AppColors.of(context).primaryText,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LoginTabCard extends StatelessWidget {
+  const _LoginTabCard({required this.state});
+
+  final _LoginPageState state;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 600,
+      margin: const EdgeInsets.symmetric(horizontal: 32),
+      decoration: BoxDecoration(
+        color: AppColors.of(context).secondaryBackground,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.of(context).primaryBackground,
+          width: 2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.2),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          TabBar(
+            dividerColor: AppColors.of(context).tertiary,
+            labelPadding: const EdgeInsets.symmetric(horizontal: 32),
+            padding: const EdgeInsets.only(top: 12),
+            tabAlignment: TabAlignment.center,
+            tabs: const [
+              Tab(
+                child: Text(
+                  'Create Account',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
               ),
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    'What Did I Miss?',
-                    style: TextStyle(
-                      fontFamily: 'Inter Tight',
-                      fontSize: 44,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.of(context).primaryText,
-                    ),
+              Tab(
+                child: Text(
+                  'Login',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 400,
+            child: TabBarView(
+              children: [
+                KeyedSubtree(
+                  key: const ValueKey<String>('create_account'),
+                  child: _CreateAccountTab(state: state),
+                ),
+                KeyedSubtree(
+                  key: const ValueKey<String>('login'),
+                  child: _LoginTab(state: state),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CreateAccountTab extends StatelessWidget {
+  const _CreateAccountTab({required this.state});
+
+  final _LoginPageState state;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 24, right: 24, top: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Create Account',
+            style: TextStyle(
+              color: AppColors.of(context).primaryText,
+              fontSize: 28,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 4, bottom: 24),
+            child: Text(
+              'Let\'s get started by filling out the form below.',
+              style: TextStyle(
+                color: AppColors.of(context).secondaryText,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'Inter',
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: LoginEmailField(controller: state._emailController),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: LoginPasswordField(
+              controller: state._passwordController,
+              obscureText: state._obscureSignUpPassword,
+              onToggleVisibility: state._toggleSignUpPassword,
+            ),
+          ),
+          Semantics(
+            button: true,
+            label: 'Create Account',
+            child: LoginPrimaryButton(
+              label: 'Create Account',
+              onPressed: state._signUp,
+              isLoading: state._isSigningUp,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LoginTab extends StatelessWidget {
+  const _LoginTab({required this.state});
+
+  final _LoginPageState state;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 24, right: 24, top: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Login',
+            style: TextStyle(
+              color: AppColors.of(context).primaryText,
+              fontSize: 28,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 4, bottom: 24),
+            child: Text(
+              'Welcome back. Enter your credentials to continue.',
+              style: TextStyle(
+                color: AppColors.of(context).secondaryText,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'Inter',
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: LoginEmailField(controller: state._loginEmailController),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: LoginPasswordField(
+              controller: state._loginPasswordController,
+              obscureText: state._obscureLoginPassword,
+              onToggleVisibility: state._toggleLoginPassword,
+            ),
+          ),
+          Semantics(
+            button: true,
+            label: 'Log In',
+            child: LoginPrimaryButton(
+              label: 'Log In',
+              onPressed: state._signIn,
+              isLoading: state._isLoggingIn,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Semantics(
+                button: true,
+                label: 'Forgot password?',
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
                   ),
+                  onPressed: state._isResettingPassword ? null : () => state._sendPasswordReset(),
+                  child: state._isResettingPassword
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Forgot password?'),
                 ),
               ),
             ),
-            Container(
-              width: 600,
-              margin: const EdgeInsets.symmetric(horizontal: 32),
-              decoration: BoxDecoration(
-                color: AppColors.of(context).secondaryBackground,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.of(context).primaryBackground, width: 2),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.2),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  TabBar(
-                    dividerColor: AppColors.of(context).tertiary,
-                    labelPadding: const EdgeInsets.symmetric(horizontal: 32),
-                    padding: const EdgeInsets.only(top: 12),
-                    tabAlignment: TabAlignment.center,
-                    tabs: const [
-                      Tab(child: Text('Create Account', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600))),
-                      Tab(child: Text('Login', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 400,
-                    child: TabBarView(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 24, right: 24, top: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Create Account',
-                                style: TextStyle(
-                                  color: AppColors.of(context).primaryText,
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 4, bottom: 24),
-                                child: Text(
-                                  'Let\'s get started by filling out the form below.',
-                                  style: TextStyle(
-                                    color: AppColors.of(context).secondaryText,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: 'Inter',
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: LoginEmailField(controller: _emailController),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: LoginPasswordField(
-                                  controller: _passwordController,
-                                  obscureText: _obscurePassword,
-                                  onToggleVisibility: () {
-                                    setState(() {
-                                      _obscurePassword = !_obscurePassword;
-                                    });
-                                  },
-                                ),
-                              ),
-                              LoginPrimaryButton(
-                                label: 'Create Account',
-                                onPressed: _signUp,
-                                isLoading: _isSigningUp,
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 24, right: 24, top: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Login',
-                                style: TextStyle(
-                                  color: AppColors.of(context).primaryText,
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 4, bottom: 24),
-                                child: Text(
-                                  'Welcome back. Enter your credentials to continue.',
-                                  style: TextStyle(
-                                    color: AppColors.of(context).secondaryText,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: 'Inter',
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: LoginEmailField(controller: _loginEmailController),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: LoginPasswordField(
-                                  controller: _loginPasswordController,
-                                  obscureText: _obscurePassword,
-                                  onToggleVisibility: () {
-                                    setState(() {
-                                      _obscurePassword = !_obscurePassword;
-                                    });
-                                  },
-                                ),
-                              ),
-                              LoginPrimaryButton(
-                                label: 'Log In',
-                                onPressed: _signIn,
-                                isLoading: _isLoggingIn,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 12),
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: TextButton(
-                                    style: TextButton.styleFrom(
-                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      visualDensity: VisualDensity.compact,
-                                    ),
-                                    onPressed: _isResettingPassword ? null : _sendPasswordReset,
-                                    child: _isResettingPassword
-                                        ? const SizedBox(
-                                            width: 16,
-                                            height: 16,
-                                            child: CircularProgressIndicator(strokeWidth: 2),
-                                          )
-                                        : const Text('Forgot password?'),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

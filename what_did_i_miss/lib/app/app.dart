@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'app_constants.dart';
 import 'routes.dart';
 import '../theme/app_theme.dart';
 import 'theme_mode_scope.dart';
@@ -24,7 +25,7 @@ class _MyAppState extends State<MyApp> {
       themeMode: _themeMode,
       setThemeMode: _setThemeMode,
       child: MaterialApp(
-        title: 'What Did I Miss',
+        title: appName,
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
