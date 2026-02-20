@@ -23,23 +23,19 @@ class HomeScreen extends StatelessWidget {
         foregroundColor: AppColors.of(context).primaryText,
         elevation: 0,
         actions: [
-          IconButton(
-            icon: Icon(
-              ThemeModeScope.of(context).themeMode == ThemeMode.dark
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
-            ),
-            onPressed: () {
-              final scope = ThemeModeScope.of(context);
-              scope.setThemeMode(
-                scope.themeMode == ThemeMode.dark
-                    ? ThemeMode.light
-                    : ThemeMode.dark,
+          Builder(
+            builder: (context) {
+              final isDark = Theme.of(context).brightness == Brightness.dark;
+              return IconButton(
+                icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+                onPressed: () {
+                  ThemeModeScope.of(context).setThemeMode(
+                    isDark ? ThemeMode.light : ThemeMode.dark,
+                  );
+                },
+                tooltip: isDark ? 'Switch to light mode' : 'Switch to dark mode',
               );
             },
-            tooltip: ThemeModeScope.of(context).themeMode == ThemeMode.dark
-                ? 'Switch to light mode'
-                : 'Switch to dark mode',
           ),
         ],
       ),
