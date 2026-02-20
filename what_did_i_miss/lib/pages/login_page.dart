@@ -187,7 +187,7 @@ class _LoginPageState extends State<LoginPage> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: DarkAppColors.secondaryBackground,
+        backgroundColor: AppColors.of(context).secondaryBackground,
         body: Column(
           children: [
             Container(
@@ -196,7 +196,7 @@ class _LoginPageState extends State<LoginPage> {
               margin: const EdgeInsets.only(left: 32, right: 32, top: 12, bottom: 32),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: DarkAppColors.primaryBackground,
+                color: AppColors.of(context).primaryBackground,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
@@ -217,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
                       fontFamily: 'Inter Tight',
                       fontSize: 44,
                       fontWeight: FontWeight.w600,
-                      color: DarkAppColors.primaryText,
+                      color: AppColors.of(context).primaryText,
                     ),
                   ),
                 ),
@@ -227,9 +227,9 @@ class _LoginPageState extends State<LoginPage> {
               width: 600,
               margin: const EdgeInsets.symmetric(horizontal: 32),
               decoration: BoxDecoration(
-                color: DarkAppColors.secondaryBackground,
+                color: AppColors.of(context).secondaryBackground,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: DarkAppColors.primaryBackground, width: 2),
+                border: Border.all(color: AppColors.of(context).primaryBackground, width: 2),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.2),
@@ -241,7 +241,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 children: [
                   TabBar(
-                    dividerColor: DarkAppColors.tertiary,
+                    dividerColor: AppColors.of(context).tertiary,
                     labelPadding: const EdgeInsets.symmetric(horizontal: 32),
                     padding: const EdgeInsets.only(top: 12),
                     tabAlignment: TabAlignment.center,
@@ -264,13 +264,13 @@ class _LoginPageState extends State<LoginPage> {
                                 height: 40,
                                 alignment: Alignment.topLeft,
                                 decoration: BoxDecoration(
-                                  color: DarkAppColors.secondaryBackground,
+                                  color: AppColors.of(context).secondaryBackground,
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
                               Text('Create Account', style:
                                 TextStyle(
-                                  color: DarkAppColors.primaryText,
+                                  color: AppColors.of(context).primaryText,
                                   fontSize: 28,
                                   fontWeight: FontWeight.w600
                                   )
@@ -279,7 +279,7 @@ class _LoginPageState extends State<LoginPage> {
                                 padding: const EdgeInsets.only(top: 4, bottom: 24),
                                 child: Text('Let\'s get started by filling out the form below.', style: 
                                   TextStyle(
-                                    color: DarkAppColors.secondaryText, 
+                                    color: AppColors.of(context).secondaryText, 
                                     fontSize: 14, 
                                     fontWeight: FontWeight.w400, 
                                     fontFamily: 'Inter'
@@ -294,9 +294,9 @@ class _LoginPageState extends State<LoginPage> {
                                   textInputAction: TextInputAction.next,
                                   decoration: InputDecoration(
                                     labelText: 'Email',
-                                    labelStyle: TextStyle(color: DarkAppColors.secondaryText),
+                                    labelStyle: TextStyle(color: AppColors.of(context).secondaryText),
                                     filled: true,
-                                    fillColor: DarkAppColors.primaryBackground,
+                                    fillColor: AppColors.of(context).primaryBackground,
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide.none,
@@ -311,9 +311,9 @@ class _LoginPageState extends State<LoginPage> {
                                   textInputAction: TextInputAction.done,
                                   decoration: InputDecoration(
                                     labelText: 'Password',
-                                    labelStyle: TextStyle(color: DarkAppColors.secondaryText),
+                                    labelStyle: TextStyle(color: AppColors.of(context).secondaryText),
                                     filled: true,
-                                    fillColor: DarkAppColors.primaryBackground,
+                                    fillColor: AppColors.of(context).primaryBackground,
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide.none,
@@ -326,7 +326,7 @@ class _LoginPageState extends State<LoginPage> {
                                       },
                                       icon: Icon(
                                         _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                                        color: DarkAppColors.secondaryText,
+                                        color: AppColors.of(context).secondaryText,
                                       ),
                                       tooltip: _obscurePassword ? 'Show password' : 'Hide password',
                                     ),
@@ -339,8 +339,8 @@ class _LoginPageState extends State<LoginPage> {
                                 child: FilledButton(
                                   onPressed: _isSigningUp ? null : _signUp,
                                   style: FilledButton.styleFrom(
-                                    backgroundColor: DarkAppColors.primary,
-                                    foregroundColor: DarkAppColors.primaryText,
+                                    backgroundColor: AppColors.of(context).primary,
+                                    foregroundColor: AppColors.of(context).primaryText,
                                     padding: const EdgeInsets.symmetric(vertical: 14),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
@@ -375,13 +375,13 @@ class _LoginPageState extends State<LoginPage> {
                                 height: 40,
                                 alignment: Alignment.topLeft,
                                 decoration: BoxDecoration(
-                                  color: DarkAppColors.secondaryBackground,
+                                  color: AppColors.of(context).secondaryBackground,
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
                               Text('Login', style:
                                 TextStyle(
-                                  color: DarkAppColors.primaryText,
+                                  color: AppColors.of(context).primaryText,
                                   fontSize: 28,
                                   fontWeight: FontWeight.w600
                                   )
@@ -390,7 +390,7 @@ class _LoginPageState extends State<LoginPage> {
                                 padding: const EdgeInsets.only(top: 4, bottom: 24),
                                 child: Text('Welcome back. Enter your credentials to continue.', style: 
                                   TextStyle(
-                                    color: DarkAppColors.secondaryText, 
+                                    color: AppColors.of(context).secondaryText, 
                                     fontSize: 14, 
                                     fontWeight: FontWeight.w400, 
                                     fontFamily: 'Inter'
@@ -405,9 +405,9 @@ class _LoginPageState extends State<LoginPage> {
                                   textInputAction: TextInputAction.next,
                                   decoration: InputDecoration(
                                     labelText: 'Email',
-                                    labelStyle: TextStyle(color: DarkAppColors.secondaryText),
+                                    labelStyle: TextStyle(color: AppColors.of(context).secondaryText),
                                     filled: true,
-                                    fillColor: DarkAppColors.primaryBackground,
+                                    fillColor: AppColors.of(context).primaryBackground,
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide.none,
@@ -422,9 +422,9 @@ class _LoginPageState extends State<LoginPage> {
                                   textInputAction: TextInputAction.done,
                                   decoration: InputDecoration(
                                     labelText: 'Password',
-                                    labelStyle: TextStyle(color: DarkAppColors.secondaryText),
+                                    labelStyle: TextStyle(color: AppColors.of(context).secondaryText),
                                     filled: true,
-                                    fillColor: DarkAppColors.primaryBackground,
+                                    fillColor: AppColors.of(context).primaryBackground,
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide.none,
@@ -437,7 +437,7 @@ class _LoginPageState extends State<LoginPage> {
                                       },
                                       icon: Icon(
                                         _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                                        color: DarkAppColors.secondaryText,
+                                        color: AppColors.of(context).secondaryText,
                                       ),
                                       tooltip: _obscurePassword ? 'Show password' : 'Hide password',
                                     ),
@@ -450,8 +450,8 @@ class _LoginPageState extends State<LoginPage> {
                                 child: FilledButton(
                                   onPressed: _isLoggingIn ? null : _signIn,
                                   style: FilledButton.styleFrom(
-                                    backgroundColor: DarkAppColors.primary,
-                                    foregroundColor: DarkAppColors.primaryText,
+                                    backgroundColor: AppColors.of(context).primary,
+                                    foregroundColor: AppColors.of(context).primaryText,
                                     padding: const EdgeInsets.symmetric(vertical: 14),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),

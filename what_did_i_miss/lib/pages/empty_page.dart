@@ -7,9 +7,9 @@ class EmptyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: DarkAppColors.primaryBackground,
-      body: SizedBox.shrink(),
+    return Scaffold(
+      backgroundColor: AppColors.of(context).primaryBackground,
+      body: const SizedBox.shrink(),
     );
   }
 }

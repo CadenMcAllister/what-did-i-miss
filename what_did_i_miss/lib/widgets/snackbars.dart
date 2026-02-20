@@ -7,22 +7,23 @@ enum SnackBarTone { info, success, warning, error }
 void showAppSnackBar(BuildContext context, String message,
     {SnackBarTone tone = SnackBarTone.info}) {
   final Color backgroundColor;
+  final colors = AppColors.of(context);
   final IconData icon;
   switch (tone) {
     case SnackBarTone.success:
-      backgroundColor = DarkAppColors.success;
+      backgroundColor = colors.success;
       icon = Icons.check_circle;
       break;
     case SnackBarTone.warning:
-      backgroundColor = DarkAppColors.warning;
+      backgroundColor = colors.warning;
       icon = Icons.warning_amber_rounded;
       break;
     case SnackBarTone.error:
-      backgroundColor = DarkAppColors.error;
+      backgroundColor = colors.error;
       icon = Icons.error_outline;
       break;
     case SnackBarTone.info:
-      backgroundColor = DarkAppColors.tertiary;
+      backgroundColor = colors.tertiary;
       icon = Icons.info_outline;
       break;
   }
@@ -37,16 +38,16 @@ void showAppSnackBar(BuildContext context, String message,
       ),
       content: Row(
         children: [
-          Icon(icon, color: DarkAppColors.primaryText),
+          Icon(icon, color: colors.primaryText),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               message,
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: 'Inter Tight',
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: DarkAppColors.primaryText,
+                color: colors.primaryText,
               ),
             ),
           ),

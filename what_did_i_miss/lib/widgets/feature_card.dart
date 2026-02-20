@@ -19,7 +19,7 @@ class FeatureCard extends StatelessWidget {
       constraints: const BoxConstraints(minHeight: 220),
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: DarkAppColors.secondaryBackground,
+        color: AppColors.of(context).secondaryBackground,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -35,13 +35,13 @@ class FeatureCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: DarkAppColors.primary.withValues(alpha: 0.1),
+              color: AppColors.of(context).primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               icon,
               size: 48,
-              color: DarkAppColors.primary,
+              color: AppColors.of(context).primary,
             ),
           ),
           const SizedBox(height: 24),
@@ -52,7 +52,7 @@ class FeatureCard extends StatelessWidget {
               fontFamily: 'Inter Tight',
               fontSize: 16,
               fontWeight: FontWeight.w400,
-              color: DarkAppColors.primaryText,
+              color: AppColors.of(context).primaryText,
               height: 1.4,
             ),
           ),

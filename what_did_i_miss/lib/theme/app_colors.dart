@@ -5,7 +5,7 @@ class LightAppColors {
   static const secondary = Color(0xFF6A7BA2);
   static const tertiary = Color(0xFFA6B8E0);
   static const alternate = Color(0xFFECEFF4);
-  static const primaryText = Color(0xFF1F2937);
+  static const primaryText = Color(0xFF455369);
   static const secondaryText = Color(0xFF6B7280);
   static const primaryBackground = Color(0xFFF8FAFC);
   static const secondaryBackground = Color(0xFFE5EAF0);
@@ -36,4 +36,62 @@ class DarkAppColors {
   static const error = Color(0xFFF87171);
   static const warning = Color(0xFFFBBF24);
   static const info = Color(0xFF60A5FA);
+}
+
+/// Theme-aware color palette. Use [AppColors.of(context)] in build methods.
+class AppColors {
+  const AppColors._({
+    required this.primary,
+    required this.primaryText,
+    required this.secondaryText,
+    required this.primaryBackground,
+    required this.secondaryBackground,
+    required this.tertiary,
+    required this.success,
+    required this.error,
+    required this.warning,
+    required this.info,
+  });
+
+  final Color primary;
+  final Color primaryText;
+  final Color secondaryText;
+  final Color primaryBackground;
+  final Color secondaryBackground;
+  final Color tertiary;
+  final Color success;
+  final Color error;
+  final Color warning;
+  final Color info;
+
+  static AppColors of(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    if (brightness == Brightness.light) {
+      return const AppColors._(
+        primary: LightAppColors.primary,
+        primaryText: LightAppColors.primaryText,
+        secondaryText: LightAppColors.secondaryText,
+        primaryBackground: LightAppColors.primaryBackground,
+        secondaryBackground: LightAppColors.secondaryBackground,
+        tertiary: LightAppColors.tertiary,
+        success: LightAppColors.success,
+        error: LightAppColors.error,
+        warning: LightAppColors.warning,
+        info: LightAppColors.info,
+      );
+    } else {
+      return const AppColors._(
+        primary: DarkAppColors.primary,
+        primaryText: DarkAppColors.primaryText,
+        secondaryText: DarkAppColors.secondaryText,
+        primaryBackground: DarkAppColors.primaryBackground,
+        secondaryBackground: DarkAppColors.secondaryBackground,
+        tertiary: DarkAppColors.tertiary,
+        success: DarkAppColors.success,
+        error: DarkAppColors.error,
+        warning: DarkAppColors.warning,
+        info: DarkAppColors.info,
+      );
+    }
+  }
 }

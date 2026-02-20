@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../app/theme_mode_scope.dart';
 import '../pages/login_page.dart';
 import '../theme/app_colors.dart';
 import '../widgets/feature_card.dart';
@@ -10,7 +11,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: DarkAppColors.primaryBackground,
+      backgroundColor: AppColors.of(context).primaryBackground,
       appBar: AppBar(
         title: const Text(
           'What Did I Miss?',
@@ -18,9 +19,29 @@ class HomeScreen extends StatelessWidget {
             fontFamily: 'Inter Tight',
           ),
         ),
-        backgroundColor: DarkAppColors.tertiary,
-        foregroundColor: DarkAppColors.primaryText,
+        backgroundColor: AppColors.of(context).tertiary,
+        foregroundColor: AppColors.of(context).primaryText,
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(
+              ThemeModeScope.of(context).themeMode == ThemeMode.dark
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+            ),
+            onPressed: () {
+              final scope = ThemeModeScope.of(context);
+              scope.setThemeMode(
+                scope.themeMode == ThemeMode.dark
+                    ? ThemeMode.light
+                    : ThemeMode.dark,
+              );
+            },
+            tooltip: ThemeModeScope.of(context).themeMode == ThemeMode.dark
+                ? 'Switch to light mode'
+                : 'Switch to dark mode',
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -41,7 +62,7 @@ class HomeScreen extends StatelessWidget {
                         fontFamily: 'Inter Tight',
                         fontSize: 64,
                         fontWeight: FontWeight.w700,
-                        color: DarkAppColors.primaryText,
+                        color: AppColors.of(context).primaryText,
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -53,7 +74,7 @@ class HomeScreen extends StatelessWidget {
                         fontFamily: 'Inter Tight',
                         fontSize: 32,
                         fontWeight: FontWeight.w400,
-                        color: DarkAppColors.secondaryText,
+                        color: AppColors.of(context).secondaryText,
                         height: 1.4,
                       ),
                     ),
@@ -66,8 +87,8 @@ class HomeScreen extends StatelessWidget {
                         );
                       },
                       style: FilledButton.styleFrom(
-                        backgroundColor: DarkAppColors.primary,
-                        foregroundColor: DarkAppColors.primaryText,
+                        backgroundColor: AppColors.of(context).primary,
+                        foregroundColor: AppColors.of(context).primaryText,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 100,
                           vertical: 16,
