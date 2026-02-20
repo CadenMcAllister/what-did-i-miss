@@ -3,11 +3,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app/app.dart';
 
+const _supabaseUrl = String.fromEnvironment('SUPABASE_URL');
+const _supabaseAnonKey = String.fromEnvironment('SUPABASE_PUBLISHABLE_KEY');
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
-    url: const String.fromEnvironment('SUPABASE_URL'),
-    anonKey: const String.fromEnvironment('SUPABASE_PUBLISHABLE_KEY'),
+    url: _supabaseUrl,
+    anonKey: _supabaseAnonKey,
   );
   runApp(const MyApp());
 }

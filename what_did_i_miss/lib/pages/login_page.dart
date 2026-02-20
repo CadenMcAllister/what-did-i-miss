@@ -82,10 +82,14 @@ class _LoginPageState extends State<LoginPage> {
         return;
       }
       showAppSnackBar(context, error.message, tone: SnackBarTone.error);
-    } catch (_) {
+    } catch (e, st) {
       if (!mounted) return;
-      showAppSnackBar(context, 'Something went wrong. Please try again.',
-          tone: SnackBarTone.error);
+      final message = e is Exception ? e.toString() : 'Something went wrong. Please try again.';
+      showAppSnackBar(context, message, tone: SnackBarTone.error);
+      assert(() {
+        debugPrintStack(stackTrace: st, label: 'SignUp error');
+        return true;
+      }());
     } finally {
       if (mounted) {
         setState(() {
@@ -157,10 +161,14 @@ class _LoginPageState extends State<LoginPage> {
     } on AuthException catch (error) {
       if (!mounted) return;
       showAppSnackBar(context, error.message, tone: SnackBarTone.error);
-    } catch (_) {
+    } catch (e, st) {
       if (!mounted) return;
-      showAppSnackBar(context, 'Something went wrong. Please try again.',
-          tone: SnackBarTone.error);
+      final message = e is Exception ? e.toString() : 'Something went wrong. Please try again.';
+      showAppSnackBar(context, message, tone: SnackBarTone.error);
+      assert(() {
+        debugPrintStack(stackTrace: st, label: 'Password reset error');
+        return true;
+      }());
     } finally {
       if (mounted) {
         setState(() {
