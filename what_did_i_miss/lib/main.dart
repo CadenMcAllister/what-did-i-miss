@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Supabase.initialize(
+    url: const String.fromEnvironment('SUPABASE_URL'),
+    anonKey: const String.fromEnvironment('SUPABASE_PUBLISHABLE_KEY'),
+  );
   runApp(const MyApp());
 }
 
@@ -161,6 +167,199 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _obscurePassword = true;
+  bool _isSigningUp = false;
+  bool _isLoggingIn = false;
+  bool _isResettingPassword = false;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _loginEmailController = TextEditingController();
+  final TextEditingController _loginPasswordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _loginEmailController.dispose();
+    _loginPasswordController.dispose();
+    super.dispose();
+  }
+
+  void _showSnackBar(String message, {_SnackBarTone tone = _SnackBarTone.info}) {
+    final Color backgroundColor;
+    final IconData icon;
+    switch (tone) {
+      case _SnackBarTone.success:
+        backgroundColor = _DarkAppColors.success;
+        icon = Icons.check_circle;
+        break;
+      case _SnackBarTone.warning:
+        backgroundColor = _DarkAppColors.warning;
+        icon = Icons.warning_amber_rounded;
+        break;
+      case _SnackBarTone.error:
+        backgroundColor = _DarkAppColors.error;
+        icon = Icons.error_outline;
+        break;
+      case _SnackBarTone.info:
+        backgroundColor = _DarkAppColors.tertiary;
+        icon = Icons.info_outline;
+        break;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: backgroundColor,
+        behavior: SnackBarBehavior.floating,
+        elevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        content: Row(
+          children: [
+            Icon(icon, color: _DarkAppColors.primaryText),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                message,
+                style: const TextStyle(
+                  fontFamily: 'Inter Tight',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: _DarkAppColors.primaryText,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _signUp() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      _showSnackBar('Email and password are required.', tone: _SnackBarTone.warning);
+      return;
+    }
+
+    setState(() {
+      _isSigningUp = true;
+    });
+
+    try {
+      final response = await Supabase.instance.client.auth.signUp(
+        email: email,
+        password: password,
+      );
+      if (!mounted) return;
+      if (response.session != null) {
+        _showSnackBar('Account created successfully.', tone: _SnackBarTone.success);
+        return;
+      }
+      try {
+        await Supabase.instance.client.auth.signInWithPassword(
+          email: email,
+          password: password,
+        );
+        if (!mounted) return;
+        _showSnackBar('Account already exists, please log in.', tone: _SnackBarTone.warning);
+        return;
+      } on AuthException {
+        if (!mounted) return;
+      }
+      _showSnackBar('Check your email to confirm your account.', tone: _SnackBarTone.info);
+    } on AuthException catch (error) {
+      if (!mounted) return;
+      final message = error.message.toLowerCase();
+      if (error.statusCode == '409' ||
+          message.contains('already registered') ||
+          message.contains('already exists') ||
+          message.contains('duplicate')) {
+        _showSnackBar('That account already exists.', tone: _SnackBarTone.warning);
+        return;
+      }
+      _showSnackBar(error.message, tone: _SnackBarTone.error);
+    } catch (_) {
+      if (!mounted) return;
+      _showSnackBar('Something went wrong. Please try again.', tone: _SnackBarTone.error);
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _isSigningUp = false;
+      });
+    }
+  }
+
+  Future<void> _signIn() async {
+    final email = _loginEmailController.text.trim();
+    final password = _loginPasswordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      _showSnackBar('Email and password are required.', tone: _SnackBarTone.warning);
+      return;
+    }
+
+    setState(() {
+      _isLoggingIn = true;
+    });
+
+    try {
+      await Supabase.instance.client.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
+      if (!mounted) return;
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const EmptyPage()),
+      );
+      _showSnackBar('Logged in successfully.', tone: _SnackBarTone.success);
+    } on AuthException catch (error) {
+      if (!mounted) return;
+      _showSnackBar(error.message, tone: _SnackBarTone.error);
+    } catch (_) {
+      if (!mounted) return;
+      _showSnackBar('Something went wrong. Please try again.', tone: _SnackBarTone.error);
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _isLoggingIn = false;
+      });
+    }
+  }
+
+  Future<void> _sendPasswordReset() async {
+    final email = _loginEmailController.text.trim();
+
+    if (email.isEmpty) {
+      _showSnackBar('Enter your email to reset your password.', tone: _SnackBarTone.warning);
+      return;
+    }
+
+    setState(() {
+      _isResettingPassword = true;
+    });
+
+    try {
+      await Supabase.instance.client.auth.resetPasswordForEmail(email);
+      if (!mounted) return;
+      _showSnackBar('Password reset email sent.', tone: _SnackBarTone.success);
+    } on AuthException catch (error) {
+      if (!mounted) return;
+      _showSnackBar(error.message, tone: _SnackBarTone.error);
+    } catch (_) {
+      if (!mounted) return;
+      _showSnackBar('Something went wrong. Please try again.', tone: _SnackBarTone.error);
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _isResettingPassword = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -184,13 +383,21 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ],
               ),
-              child: Text(
-                'What Did I Miss?',
-                style: TextStyle(
-                  fontFamily: 'Inter Tight',
-                  fontSize: 44,
-                  fontWeight: FontWeight.w600,
-                  color: _DarkAppColors.primaryText,
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    'What Did I Miss?',
+                    style: TextStyle(
+                      fontFamily: 'Inter Tight',
+                      fontSize: 44,
+                      fontWeight: FontWeight.w600,
+                      color: _DarkAppColors.primaryText,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -246,18 +453,221 @@ class _LoginPageState extends State<LoginPage> {
                                   fontWeight: FontWeight.w600
                                   )
                                 ),
-                              Text('Let\'s get started by filling out the form below.', style: 
-                                TextStyle(
-                                  color: _DarkAppColors.secondaryText, 
-                                  fontSize: 14, 
-                                  fontWeight: FontWeight.w400, 
-                                  fontFamily: 'Inter'
-                                )
-                              )
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4, bottom: 24),
+                                child: Text('Let\'s get started by filling out the form below.', style: 
+                                  TextStyle(
+                                    color: _DarkAppColors.secondaryText, 
+                                    fontSize: 14, 
+                                    fontWeight: FontWeight.w400, 
+                                    fontFamily: 'Inter'
+                                  )
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                child: TextField(
+                                  controller: _emailController,
+                                  keyboardType: TextInputType.emailAddress,
+                                  textInputAction: TextInputAction.next,
+                                  decoration: InputDecoration(
+                                    labelText: 'Email',
+                                    labelStyle: TextStyle(color: _DarkAppColors.secondaryText),
+                                    filled: true,
+                                    fillColor: _DarkAppColors.primaryBackground,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                child: TextField(
+                                  controller: _passwordController,
+                                  textInputAction: TextInputAction.done,
+                                  decoration: InputDecoration(
+                                    labelText: 'Password',
+                                    labelStyle: TextStyle(color: _DarkAppColors.secondaryText),
+                                    filled: true,
+                                    fillColor: _DarkAppColors.primaryBackground,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    suffixIcon: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _obscurePassword = !_obscurePassword;
+                                        });
+                                      },
+                                      icon: Icon(
+                                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                        color: _DarkAppColors.secondaryText,
+                                      ),
+                                      tooltip: _obscurePassword ? 'Show password' : 'Hide password',
+                                    ),
+                                  ),
+                                  obscureText: _obscurePassword,
+                                ),
+                              ),
+                              SizedBox(
+                                width: double.infinity,
+                                child: FilledButton(
+                                  onPressed: _isSigningUp ? null : _signUp,
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor: _DarkAppColors.primary,
+                                    foregroundColor: _DarkAppColors.primaryText,
+                                    padding: const EdgeInsets.symmetric(vertical: 14),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  child: _isSigningUp
+                                      ? const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(strokeWidth: 2),
+                                        )
+                                      : const Text(
+                                          'Create Account',
+                                          style: TextStyle(
+                                            fontFamily: 'Inter Tight',
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                ),
+                              ),
+
                             ],
                           ),
                         ),
-                        Center(child: Text('Login Tab', style: TextStyle(color: _DarkAppColors.primaryText))),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 24, right: 24, top: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 230,
+                                height: 40,
+                                alignment: Alignment.topLeft,
+                                decoration: BoxDecoration(
+                                  color: _DarkAppColors.secondaryBackground,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              Text('Login', style:
+                                TextStyle(
+                                  color: _DarkAppColors.primaryText,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w600
+                                  )
+                                ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4, bottom: 24),
+                                child: Text('Welcome back. Enter your credentials to continue.', style: 
+                                  TextStyle(
+                                    color: _DarkAppColors.secondaryText, 
+                                    fontSize: 14, 
+                                    fontWeight: FontWeight.w400, 
+                                    fontFamily: 'Inter'
+                                  )
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                child: TextField(
+                                  controller: _loginEmailController,
+                                  keyboardType: TextInputType.emailAddress,
+                                  textInputAction: TextInputAction.next,
+                                  decoration: InputDecoration(
+                                    labelText: 'Email',
+                                    labelStyle: TextStyle(color: _DarkAppColors.secondaryText),
+                                    filled: true,
+                                    fillColor: _DarkAppColors.primaryBackground,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                child: TextField(
+                                  controller: _loginPasswordController,
+                                  textInputAction: TextInputAction.done,
+                                  decoration: InputDecoration(
+                                    labelText: 'Password',
+                                    labelStyle: TextStyle(color: _DarkAppColors.secondaryText),
+                                    filled: true,
+                                    fillColor: _DarkAppColors.primaryBackground,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    suffixIcon: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _obscurePassword = !_obscurePassword;
+                                        });
+                                      },
+                                      icon: Icon(
+                                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                        color: _DarkAppColors.secondaryText,
+                                      ),
+                                      tooltip: _obscurePassword ? 'Show password' : 'Hide password',
+                                    ),
+                                  ),
+                                  obscureText: _obscurePassword,
+                                ),
+                              ),
+                              SizedBox(
+                                width: double.infinity,
+                                child: FilledButton(
+                                  onPressed: _isLoggingIn ? null : _signIn,
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor: _DarkAppColors.primary,
+                                    foregroundColor: _DarkAppColors.primaryText,
+                                    padding: const EdgeInsets.symmetric(vertical: 14),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  child: _isLoggingIn
+                                      ? const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(strokeWidth: 2),
+                                        )
+                                      : const Text(
+                                          'Log In',
+                                          style: TextStyle(
+                                            fontFamily: 'Inter Tight',
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: TextButton(
+                                  onPressed: _isResettingPassword ? null : _sendPasswordReset,
+                                  child: _isResettingPassword
+                                      ? const SizedBox(
+                                          width: 16,
+                                          height: 16,
+                                          child: CircularProgressIndicator(strokeWidth: 2),
+                                        )
+                                      : const Text('Forgot password?'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -329,6 +739,20 @@ class _FeatureCard extends StatelessWidget {
     );
   }
 }
+
+class EmptyPage extends StatelessWidget {
+  const EmptyPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      backgroundColor: _DarkAppColors.primaryBackground,
+      body: SizedBox.shrink(),
+    );
+  }
+}
+
+enum _SnackBarTone { info, success, warning, error }
 
 class _LightAppColors {
   static const primary = Color(0xFF4A90E2);
