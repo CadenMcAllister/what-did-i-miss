@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../app/routes.dart';
 import '../app/theme_mode_scope.dart';
-import '../pages/login_page.dart';
 import '../theme/app_colors.dart';
 import '../widgets/feature_card.dart';
 
@@ -82,9 +82,7 @@ class HomeScreen extends StatelessWidget {
                     // Get Started Button
                     FilledButton(
                       onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => const LoginPage()),
-                        );
+                        Navigator.pushNamed(context, AppRoutes.login);
                       },
                       style: FilledButton.styleFrom(
                         backgroundColor: AppColors.of(context).primary,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../pages/home_screen.dart';
+import 'routes.dart';
 import '../theme/app_theme.dart';
 import 'theme_mode_scope.dart';
 
@@ -29,7 +29,8 @@ class _MyAppState extends State<MyApp> {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: _themeMode,
-        home: const HomeScreen(),
+        initialRoute: AppRoutes.home,
+        routes: AppRoutes.routes,
       ),
     );
   }

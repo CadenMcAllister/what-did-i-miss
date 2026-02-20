@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../pages/empty_page.dart';
+import '../app/routes.dart';
 import '../theme/app_colors.dart';
 import '../widgets/snackbars.dart';
 
@@ -119,9 +119,7 @@ class _LoginPageState extends State<LoginPage> {
         password: password,
       );
       if (!mounted) return;
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const EmptyPage()),
-      );
+      Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
       showAppSnackBar(context, 'Logged in successfully.',
           tone: SnackBarTone.success);
     } on AuthException catch (error) {
@@ -209,7 +207,7 @@ class _LoginPageState extends State<LoginPage> {
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.of(context).pop();
+                    Navigator.pop(context);
                   },
                   child: Text(
                     'What Did I Miss?',
