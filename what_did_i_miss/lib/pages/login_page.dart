@@ -461,17 +461,24 @@ class _LoginPageState extends State<LoginPage> {
                                         ),
                                 ),
                               ),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: TextButton(
-                                  onPressed: _isResettingPassword ? null : _sendPasswordReset,
-                                  child: _isResettingPassword
-                                      ? const SizedBox(
-                                          width: 16,
-                                          height: 16,
-                                          child: CircularProgressIndicator(strokeWidth: 2),
-                                        )
-                                      : const Text('Forgot password?'),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 12),
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: TextButton(
+                                    style: TextButton.styleFrom(
+                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      visualDensity: VisualDensity.compact,
+                                    ),
+                                    onPressed: _isResettingPassword ? null : _sendPasswordReset,
+                                    child: _isResettingPassword
+                                        ? const SizedBox(
+                                            width: 16,
+                                            height: 16,
+                                            child: CircularProgressIndicator(strokeWidth: 2),
+                                          )
+                                        : const Text('Forgot password?'),
+                                  ),
                                 ),
                               ),
                             ],
