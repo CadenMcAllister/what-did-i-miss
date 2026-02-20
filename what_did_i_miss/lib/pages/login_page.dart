@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../app/routes.dart';
 import '../theme/app_colors.dart';
+import '../widgets/login_form.dart';
 import '../widgets/snackbars.dart';
 
 class LoginPage extends StatefulWidget {
@@ -257,108 +258,46 @@ class _LoginPageState extends State<LoginPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                width: 230,
-                                height: 40,
-                                alignment: Alignment.topLeft,
-                                decoration: BoxDecoration(
-                                  color: AppColors.of(context).secondaryBackground,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              Text('Create Account', style:
-                                TextStyle(
+                              Text(
+                                'Create Account',
+                                style: TextStyle(
                                   color: AppColors.of(context).primaryText,
                                   fontSize: 28,
-                                  fontWeight: FontWeight.w600
-                                  )
+                                  fontWeight: FontWeight.w600,
                                 ),
+                              ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 4, bottom: 24),
-                                child: Text('Let\'s get started by filling out the form below.', style: 
-                                  TextStyle(
-                                    color: AppColors.of(context).secondaryText, 
-                                    fontSize: 14, 
-                                    fontWeight: FontWeight.w400, 
-                                    fontFamily: 'Inter'
-                                  )
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: TextField(
-                                  controller: _emailController,
-                                  keyboardType: TextInputType.emailAddress,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                    labelText: 'Email',
-                                    labelStyle: TextStyle(color: AppColors.of(context).secondaryText),
-                                    filled: true,
-                                    fillColor: AppColors.of(context).primaryBackground,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide.none,
-                                    ),
+                                child: Text(
+                                  'Let\'s get started by filling out the form below.',
+                                  style: TextStyle(
+                                    color: AppColors.of(context).secondaryText,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'Inter',
                                   ),
                                 ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 16),
-                                child: TextField(
+                                child: LoginEmailField(controller: _emailController),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                child: LoginPasswordField(
                                   controller: _passwordController,
-                                  textInputAction: TextInputAction.done,
-                                  decoration: InputDecoration(
-                                    labelText: 'Password',
-                                    labelStyle: TextStyle(color: AppColors.of(context).secondaryText),
-                                    filled: true,
-                                    fillColor: AppColors.of(context).primaryBackground,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    suffixIcon: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          _obscurePassword = !_obscurePassword;
-                                        });
-                                      },
-                                      icon: Icon(
-                                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                                        color: AppColors.of(context).secondaryText,
-                                      ),
-                                      tooltip: _obscurePassword ? 'Show password' : 'Hide password',
-                                    ),
-                                  ),
                                   obscureText: _obscurePassword,
+                                  onToggleVisibility: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
                                 ),
                               ),
-                              SizedBox(
-                                width: double.infinity,
-                                child: FilledButton(
-                                  onPressed: _isSigningUp ? null : _signUp,
-                                  style: FilledButton.styleFrom(
-                                    backgroundColor: AppColors.of(context).primary,
-                                    foregroundColor: AppColors.of(context).primaryText,
-                                    padding: const EdgeInsets.symmetric(vertical: 14),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                  child: _isSigningUp
-                                      ? const SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: CircularProgressIndicator(strokeWidth: 2),
-                                        )
-                                      : const Text(
-                                          'Create Account',
-                                          style: TextStyle(
-                                            fontFamily: 'Inter Tight',
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                ),
+                              LoginPrimaryButton(
+                                label: 'Create Account',
+                                onPressed: _signUp,
+                                isLoading: _isSigningUp,
                               ),
                             ],
                           ),
@@ -368,108 +307,46 @@ class _LoginPageState extends State<LoginPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                width: 230,
-                                height: 40,
-                                alignment: Alignment.topLeft,
-                                decoration: BoxDecoration(
-                                  color: AppColors.of(context).secondaryBackground,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              Text('Login', style:
-                                TextStyle(
+                              Text(
+                                'Login',
+                                style: TextStyle(
                                   color: AppColors.of(context).primaryText,
                                   fontSize: 28,
-                                  fontWeight: FontWeight.w600
-                                  )
+                                  fontWeight: FontWeight.w600,
                                 ),
+                              ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 4, bottom: 24),
-                                child: Text('Welcome back. Enter your credentials to continue.', style: 
-                                  TextStyle(
-                                    color: AppColors.of(context).secondaryText, 
-                                    fontSize: 14, 
-                                    fontWeight: FontWeight.w400, 
-                                    fontFamily: 'Inter'
-                                  )
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: TextField(
-                                  controller: _loginEmailController,
-                                  keyboardType: TextInputType.emailAddress,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                    labelText: 'Email',
-                                    labelStyle: TextStyle(color: AppColors.of(context).secondaryText),
-                                    filled: true,
-                                    fillColor: AppColors.of(context).primaryBackground,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide.none,
-                                    ),
+                                child: Text(
+                                  'Welcome back. Enter your credentials to continue.',
+                                  style: TextStyle(
+                                    color: AppColors.of(context).secondaryText,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'Inter',
                                   ),
                                 ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 16),
-                                child: TextField(
+                                child: LoginEmailField(controller: _loginEmailController),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                child: LoginPasswordField(
                                   controller: _loginPasswordController,
-                                  textInputAction: TextInputAction.done,
-                                  decoration: InputDecoration(
-                                    labelText: 'Password',
-                                    labelStyle: TextStyle(color: AppColors.of(context).secondaryText),
-                                    filled: true,
-                                    fillColor: AppColors.of(context).primaryBackground,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    suffixIcon: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          _obscurePassword = !_obscurePassword;
-                                        });
-                                      },
-                                      icon: Icon(
-                                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                                        color: AppColors.of(context).secondaryText,
-                                      ),
-                                      tooltip: _obscurePassword ? 'Show password' : 'Hide password',
-                                    ),
-                                  ),
                                   obscureText: _obscurePassword,
+                                  onToggleVisibility: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
                                 ),
                               ),
-                              SizedBox(
-                                width: double.infinity,
-                                child: FilledButton(
-                                  onPressed: _isLoggingIn ? null : _signIn,
-                                  style: FilledButton.styleFrom(
-                                    backgroundColor: AppColors.of(context).primary,
-                                    foregroundColor: AppColors.of(context).primaryText,
-                                    padding: const EdgeInsets.symmetric(vertical: 14),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                  child: _isLoggingIn
-                                      ? const SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: CircularProgressIndicator(strokeWidth: 2),
-                                        )
-                                      : const Text(
-                                          'Log In',
-                                          style: TextStyle(
-                                            fontFamily: 'Inter Tight',
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                ),
+                              LoginPrimaryButton(
+                                label: 'Log In',
+                                onPressed: _signIn,
+                                isLoading: _isLoggingIn,
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 12),
