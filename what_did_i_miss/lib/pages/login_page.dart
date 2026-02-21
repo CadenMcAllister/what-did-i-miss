@@ -7,6 +7,12 @@ import '../theme/app_colors.dart';
 import '../widgets/login_form.dart';
 import '../widgets/snackbars.dart';
 
+/// Returns true if [email] looks like a valid email address.
+bool _isValidEmail(String email) {
+  if (email.isEmpty) return false;
+  return RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(email);
+}
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -59,6 +65,11 @@ class _LoginPageState extends State<LoginPage> {
 
     if (email.isEmpty || password.isEmpty) {
       showAppSnackBar(context, 'Email and password are required.',
+          tone: SnackBarTone.warning);
+      return;
+    }
+    if (!_isValidEmail(email)) {
+      showAppSnackBar(context, 'Please enter a valid email address.',
           tone: SnackBarTone.warning);
       return;
     }
@@ -124,6 +135,11 @@ class _LoginPageState extends State<LoginPage> {
           tone: SnackBarTone.warning);
       return;
     }
+    if (!_isValidEmail(email)) {
+      showAppSnackBar(context, 'Please enter a valid email address.',
+          tone: SnackBarTone.warning);
+      return;
+    }
 
     setState(() {
       _isLoggingIn = true;
@@ -160,6 +176,11 @@ class _LoginPageState extends State<LoginPage> {
           tone: SnackBarTone.warning);
       return;
     }
+    if (!_isValidEmail(email)) {
+      showAppSnackBar(context, 'Please enter a valid email address.',
+          tone: SnackBarTone.warning);
+      return;
+    }
 
     setState(() {
       _isResettingPassword = true;
@@ -190,11 +211,14 @@ class _LoginPageState extends State<LoginPage> {
       length: 2,
       child: Scaffold(
         backgroundColor: AppColors.of(context).secondaryBackground,
-        body: Column(
-          children: [
-            const _LoginHeader(),
-            _LoginTabCard(state: this),
-          ],
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const _LoginHeader(),
+              _LoginTabCard(state: this),
+            ],
+          ),
         ),
       ),
     );
