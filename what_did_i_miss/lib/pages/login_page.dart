@@ -13,6 +13,12 @@ bool _isValidEmail(String email) {
   return RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(email);
 }
 
+/// Returns the part of [email] before the @ for use as display name in Supabase auth.
+String _displayNameFromEmail(String email) {
+  if (email.isEmpty || !email.contains('@')) return email;
+  return email.split('@').first;
+}
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -79,9 +85,11 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
+      final displayName = _displayNameFromEmail(email);
       final response = await Supabase.instance.client.auth.signUp(
         email: email,
         password: password,
+        data: {'display_name': displayName},
       );
       if (!mounted) return;
       if (response.session != null) {
@@ -94,6 +102,14 @@ class _LoginPageState extends State<LoginPage> {
           email: email,
           password: password,
         );
+        final user = Supabase.instance.client.auth.currentUser;
+        final existingName = user?.userMetadata?['display_name'] as String?;
+        if (user != null &&
+            (existingName == null || existingName.isEmpty)) {
+          await Supabase.instance.client.auth.updateUser(
+            UserAttributes(data: {'display_name': _displayNameFromEmail(email)}),
+          );
+        }
         if (!mounted) return;
         showAppSnackBar(context, 'Account already exists, please log in.',
             tone: SnackBarTone.warning);
@@ -150,6 +166,15 @@ class _LoginPageState extends State<LoginPage> {
         email: email,
         password: password,
       );
+      // Ensure display_name is set in auth user metadata (e.g. for existing users).
+      final user = Supabase.instance.client.auth.currentUser;
+      final existingName = user?.userMetadata?['display_name'] as String?;
+      if (user != null &&
+          (existingName == null || existingName.isEmpty)) {
+        await Supabase.instance.client.auth.updateUser(
+          UserAttributes(data: {'display_name': _displayNameFromEmail(email)}),
+        );
+      }
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
       showAppSnackBar(context, 'Logged in successfully.',
