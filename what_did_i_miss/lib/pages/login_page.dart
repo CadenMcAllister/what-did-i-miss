@@ -212,7 +212,10 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
-      await Supabase.instance.client.auth.resetPasswordForEmail(email);
+      await Supabase.instance.client.auth.resetPasswordForEmail(
+        email,
+        redirectTo: authRedirectUrl,
+      );
       if (!mounted) return;
       showAppSnackBar(context, 'Password reset email sent.',
           tone: SnackBarTone.success);
