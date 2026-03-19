@@ -65,6 +65,16 @@ class _LoginPageState extends State<LoginPage> {
     setState(() => _obscureLoginPassword = !_obscureLoginPassword);
   }
 
+  void _submitSignUpFromKeyboard(String _) {
+    if (_isSigningUp) return;
+    _signUp();
+  }
+
+  void _submitSignInFromKeyboard(String _) {
+    if (_isLoggingIn) return;
+    _signIn();
+  }
+
   Future<void> _signUp() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
@@ -394,7 +404,9 @@ class _CreateAccountTab extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
-            child: LoginEmailField(controller: state._emailController),
+            child: LoginEmailField(
+              controller: state._emailController,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
@@ -402,6 +414,7 @@ class _CreateAccountTab extends StatelessWidget {
               controller: state._passwordController,
               obscureText: state._obscureSignUpPassword,
               onToggleVisibility: state._toggleSignUpPassword,
+              onSubmitted: state._submitSignUpFromKeyboard,
             ),
           ),
           Semantics(
@@ -453,7 +466,9 @@ class _LoginTab extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
-            child: LoginEmailField(controller: state._loginEmailController),
+            child: LoginEmailField(
+              controller: state._loginEmailController,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
@@ -461,6 +476,7 @@ class _LoginTab extends StatelessWidget {
               controller: state._loginPasswordController,
               obscureText: state._obscureLoginPassword,
               onToggleVisibility: state._toggleLoginPassword,
+              onSubmitted: state._submitSignInFromKeyboard,
             ),
           ),
           Semantics(

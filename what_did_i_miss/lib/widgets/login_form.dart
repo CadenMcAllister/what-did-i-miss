@@ -8,10 +8,12 @@ class LoginEmailField extends StatelessWidget {
     super.key,
     required this.controller,
     this.decoration,
+    this.onSubmitted,
   });
 
   final TextEditingController controller;
   final InputDecoration? decoration;
+  final ValueChanged<String>? onSubmitted;
 
   static InputDecoration _defaultDecoration(BuildContext context) {
     final colors = AppColors.of(context);
@@ -43,6 +45,7 @@ class LoginEmailField extends StatelessWidget {
       controller: controller,
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
+      onSubmitted: onSubmitted,
       decoration: effective,
     );
   }
@@ -56,12 +59,14 @@ class LoginPasswordField extends StatelessWidget {
     required this.obscureText,
     required this.onToggleVisibility,
     this.decoration,
+    this.onSubmitted,
   });
 
   final TextEditingController controller;
   final bool obscureText;
   final VoidCallback onToggleVisibility;
   final InputDecoration? decoration;
+  final ValueChanged<String>? onSubmitted;
 
   static InputDecoration _defaultDecoration(
     BuildContext context, {
@@ -106,6 +111,7 @@ class LoginPasswordField extends StatelessWidget {
       controller: controller,
       textInputAction: TextInputAction.done,
       obscureText: obscureText,
+      onSubmitted: onSubmitted,
       decoration: effective,
     );
   }
