@@ -4,6 +4,7 @@ import '../app/app_constants.dart';
 import '../app/routes.dart';
 import '../app/theme_mode_scope.dart';
 import '../theme/app_colors.dart';
+import '../widgets/account_app_bar_menu.dart';
 import '../widgets/feature_card.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -38,6 +39,7 @@ class HomeScreen extends StatelessWidget {
               );
             },
           ),
+          const AccountAppBarMenu(),
         ],
       ),
       body: SafeArea(
