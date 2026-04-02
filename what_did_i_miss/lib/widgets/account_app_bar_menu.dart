@@ -104,7 +104,22 @@ class AccountAppBarMenu extends StatelessWidget {
                 ],
               ),
             ),
-            const PopupMenuDivider(),
+            PopupMenuItem<String>(
+              value: '_divider',
+              enabled: false,
+              height: 13,
+              padding: const EdgeInsets.fromLTRB(12, 5, 12, 5),
+              child: SizedBox(
+                height: 1,
+                width: double.infinity,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: colors.tertiary,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+              ),
+            ),
             PopupMenuItem<String>(
               value: 'signOut',
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
