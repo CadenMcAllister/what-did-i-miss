@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app_constants.dart';
+import 'app_route_observer.dart';
 import 'routes.dart';
 import '../theme/app_theme.dart';
 import 'theme_mode_scope.dart';
@@ -64,6 +65,7 @@ class _MyAppState extends State<MyApp> {
       setThemeMode: _setThemeMode,
       child: MaterialApp(
         navigatorKey: _navigatorKey,
+        navigatorObservers: [appRouteObserver],
         title: appName,
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
