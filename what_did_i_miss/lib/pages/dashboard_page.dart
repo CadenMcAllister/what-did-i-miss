@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../app/app_constants.dart';
-import '../app/routes.dart';
 import '../app/theme_mode_scope.dart';
 import '../theme/app_colors.dart';
 import '../widgets/account_app_bar_menu.dart';
@@ -10,17 +9,6 @@ import '../widgets/route_aware_refresh.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
-
-  Future<void> _signOut(BuildContext context) async {
-    await Supabase.instance.client.auth.signOut();
-    if (context.mounted) {
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        AppRoutes.login,
-        (route) => false,
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,29 +77,6 @@ class DashboardPage extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-                FilledButton(
-                  onPressed: () => _signOut(context),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: colors.primary,
-                    foregroundColor: colors.primaryText,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 14,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    'Sign out',
-                    style: TextStyle(
-                      fontFamily: 'Inter Tight',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
                   ),
                 ),
               ],

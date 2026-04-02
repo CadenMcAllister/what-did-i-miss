@@ -22,7 +22,18 @@ void openDashboardIfNeeded(BuildContext context) {
   Navigator.pushNamed(context, AppRoutes.dashboard);
 }
 
-/// Avatar + name chip that opens a menu with [Dashboard] when signed in.
+Future<void> signOutAndNavigateToLogin(BuildContext context) async {
+  await Supabase.instance.client.auth.signOut();
+  if (context.mounted) {
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      AppRoutes.login,
+      (route) => false,
+    );
+  }
+}
+
+/// Avatar + name chip: Dashboard and Sign out when signed in.
 class AccountAppBarMenu extends StatelessWidget {
   const AccountAppBarMenu({super.key});
 
@@ -63,7 +74,11 @@ class AccountAppBarMenu extends StatelessWidget {
           elevation: 8,
           shadowColor: colors.primaryText.withValues(alpha: 0.12),
           onSelected: (value) {
-            if (value == 'dashboard') openDashboardIfNeeded(context);
+            if (value == 'dashboard') {
+              openDashboardIfNeeded(context);
+            } else if (value == 'signOut') {
+              signOutAndNavigateToLogin(context);
+            }
           },
           itemBuilder: (context) => [
             PopupMenuItem<String>(
@@ -84,6 +99,30 @@ class AccountAppBarMenu extends StatelessWidget {
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                       color: colors.primaryText,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const PopupMenuDivider(),
+            PopupMenuItem<String>(
+              value: 'signOut',
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.logout_rounded,
+                    size: 22,
+                    color: colors.error,
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Sign out',
+                    style: TextStyle(
+                      fontFamily: 'Inter Tight',
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: colors.error,
                     ),
                   ),
                 ],
