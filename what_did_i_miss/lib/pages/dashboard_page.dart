@@ -8,15 +8,15 @@ import '../theme/app_colors.dart';
 import '../widgets/account_app_bar_menu.dart';
 import '../widgets/route_aware_refresh.dart';
 
-class EmptyPage extends StatelessWidget {
-  const EmptyPage({super.key});
+class DashboardPage extends StatelessWidget {
+  const DashboardPage({super.key});
 
   Future<void> _signOut(BuildContext context) async {
     await Supabase.instance.client.auth.signOut();
     if (context.mounted) {
       Navigator.pushNamedAndRemoveUntil(
         context,
-        AppRoutes.home,
+        AppRoutes.login,
         (route) => false,
       );
     }

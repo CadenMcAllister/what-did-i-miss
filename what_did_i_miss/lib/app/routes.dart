@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../pages/empty_page.dart';
+import '../pages/dashboard_page.dart';
 import '../pages/home_screen.dart';
 import '../pages/login_page.dart';
 import '../pages/reset_password_page.dart';
@@ -14,7 +14,7 @@ class AppRoutes {
   static Map<String, WidgetBuilder> get routes => {
     home: (ctx) => const HomeScreen(),
     login: (ctx) => const LoginPage(),
-    dashboard: (ctx) => const EmptyPage(),
+    dashboard: (ctx) => const DashboardPage(),
     resetPassword: (ctx) => const ResetPasswordPage(),
   };
 }
