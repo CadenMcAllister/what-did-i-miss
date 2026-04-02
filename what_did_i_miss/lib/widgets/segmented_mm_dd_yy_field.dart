@@ -59,6 +59,21 @@ class SegmentedMmDdYyFieldState extends State<SegmentedMmDdYyField> {
     }
   }
 
+  static bool _sameCalendarDay(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
+
+  @override
+  void didUpdateWidget(SegmentedMmDdYyField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!_sameCalendarDay(widget.initialDate, oldWidget.initialDate)) {
+      final d = widget.initialDate;
+      _monthC.text = d.month.toString().padLeft(2, '0');
+      _dayC.text = d.day.toString().padLeft(2, '0');
+      final yy = d.year % 100;
+      _yearC.text = yy.toString().padLeft(2, '0');
+    }
+  }
+
   void _onAnyFocusChange() {
     setState(() {});
     _scheduleCommitCheck();

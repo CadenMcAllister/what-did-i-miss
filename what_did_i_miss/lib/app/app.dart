@@ -6,6 +6,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app_constants.dart';
 import 'app_route_observer.dart';
+import 'app_state.dart';
+import 'app_state_scope.dart';
 import 'routes.dart';
 import '../theme/app_theme.dart';
 import 'theme_mode_scope.dart';
@@ -21,6 +23,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   ThemeMode _themeMode = ThemeMode.system;
+  final AppState _appState = AppState();
   StreamSubscription<AuthState>? _authSubscription;
 
   void _setThemeMode(ThemeMode mode) {
@@ -40,6 +43,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     _authSubscription?.cancel();
+    _appState.dispose();
     super.dispose();
   }
 
@@ -60,19 +64,22 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ThemeModeScope(
-      themeMode: _themeMode,
-      setThemeMode: _setThemeMode,
-      child: MaterialApp(
-        navigatorKey: _navigatorKey,
-        navigatorObservers: [appRouteObserver],
-        title: appName,
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
+    return AppStateScope(
+      notifier: _appState,
+      child: ThemeModeScope(
         themeMode: _themeMode,
-        initialRoute: AppRoutes.home,
-        routes: AppRoutes.routes,
+        setThemeMode: _setThemeMode,
+        child: MaterialApp(
+          navigatorKey: _navigatorKey,
+          navigatorObservers: [appRouteObserver],
+          title: appName,
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: _themeMode,
+          initialRoute: AppRoutes.home,
+          routes: AppRoutes.routes,
+        ),
       ),
     );
   }
