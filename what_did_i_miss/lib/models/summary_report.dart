@@ -44,7 +44,7 @@ class SummaryReport {
 
     return SummaryReport(
       id: json['id'] as String,
-      userId: json['user_id'] as String,
+      userId: json['user_id'] as String? ?? '',
       dateStart: _parseDate(json['date_start']),
       dateEnd: _parseDate(json['date_end']),
       topics: topics,

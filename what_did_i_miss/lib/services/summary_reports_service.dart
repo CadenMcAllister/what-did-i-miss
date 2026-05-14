@@ -59,4 +59,22 @@ class SummaryReportsService {
     if (row == null) return null;
     return SummaryReport.fromJson(Map<String, dynamic>.from(row));
   }
+
+  /// Recent rows for the signed-in user (newest first). RLS should scope to `auth.uid()`.
+  Future<List<SummaryReport>> listMyRecentReports({int limit = 30}) async {
+    final data = await _client
+        .from('summary_reports')
+        .select(
+          'id, user_id, date_start, date_end, topics, status, result_markdown, created_at',
+        )
+        .order('created_at', ascending: false)
+        .limit(limit);
+    return data
+        .map(
+          (e) => SummaryReport.fromJson(
+            Map<String, dynamic>.from(e as Map),
+          ),
+        )
+        .toList();
+  }
 }
