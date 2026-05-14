@@ -3,4 +3,4 @@ const String appName = 'What Did I Miss?';
 
 /// Redirect URL for password reset email. Add this exact URL to Supabase
 /// Dashboard → Authentication → URL Configuration → Redirect URLs.
-const String authRedirectUrl = 'com.whatdidimiss.app://reset-password';
+const String authRedirectUrl = 'https://what-did-i-miss-chi.vercel.app/reset-password';
