@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:app_links/app_links.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -77,7 +78,9 @@ class _MyAppState extends State<MyApp> {
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: _themeMode,
-          initialRoute: AppRoutes.home,
+          // On web, setting [initialRoute] overrides the browser URL and always
+          // opens `/`. Omit it so `/reset-password` and other deep links work.
+          initialRoute: kIsWeb ? null : AppRoutes.home,
           routes: AppRoutes.routes,
         ),
       ),
