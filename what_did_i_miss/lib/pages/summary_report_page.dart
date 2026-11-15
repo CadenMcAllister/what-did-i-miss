@@ -8,8 +8,11 @@ import '../services/summary_reports_service.dart';
 import '../theme/app_colors.dart';
 
 /// Light cleanup so model output spacing reads more evenly in the client.
+/// Also strips Linkup private-use citation tokens (e.g. \uE200cite\uE2023\uE201).
 String _normalizeMarkdownForDisplay(String raw) {
   var s = raw.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
+  s = s.replaceAll(RegExp(r'\uE200cite\uE202\d+\uE201'), '');
+  s = s.replaceAll(RegExp(r'\uE200cite\uE202[^\uE201]*\uE201'), '');
   s = s.replaceAll(RegExp(r'\n{4,}'), '\n\n\n');
   return s.trim();
 }
