@@ -60,8 +60,26 @@ flutter:
   fonts:
     - family: Figtree
       fonts:
-        - asset: assets/fonts/Figtree-VariableFont_wght.ttf
-        - asset: assets/fonts/Figtree-Italic-VariableFont_wght.ttf
+        - asset: assets/fonts/Figtree-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Figtree-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Figtree-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Figtree-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Figtree-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/Figtree-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/Figtree-SemiBoldItalic.ttf
+          weight: 600
+          style: italic
+        - asset: assets/fonts/Figtree-BoldItalic.ttf
+          weight: 700
+          style: italic
 
 
   # To add assets to your application, add an assets section, like this:
