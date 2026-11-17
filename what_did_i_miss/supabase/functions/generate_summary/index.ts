@@ -210,9 +210,9 @@ Deno.serve(async (req) => {
       "Use the largest header for the topic and date range at the top. " +
       "Use smaller headers with the topics and also bold those headers. " +
       "Remember to use all the features of markdown such as bolding, italics, " +
-      "but minimize the use of line breaks or dividers to only the seperation of topics. " +
-      "Avoid biased sources like Fox News and sometimes even official Department of Homeland Security/ICE documents. " +
-      "Only use good sources (I. E. BBC, AP, NPR, Reuters, etc.) or official court documents.";
+      "but minimize the use of line breaks or dividers to only the separation of topics. " +
+      "Avoid biased sources like Fox News and MSNBC" +
+      "Only use reputable sources (I. E. BBC, AP, NPR, Reuters, etc.) or official court documents.";
 
     let data: { answer?: string } | null = null;
     let fetchError: string | null = null;
