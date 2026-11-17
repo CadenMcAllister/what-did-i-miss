@@ -41,13 +41,19 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       return;
     }
     if (password != confirm) {
-      showAppSnackBar(context, 'Passwords do not match.',
-          tone: SnackBarTone.warning);
+      showAppSnackBar(
+        context,
+        'Passwords do not match.',
+        tone: SnackBarTone.warning,
+      );
       return;
     }
     if (password.length < 6) {
-      showAppSnackBar(context, 'Password must be at least 6 characters.',
-          tone: SnackBarTone.warning);
+      showAppSnackBar(
+        context,
+        'Password must be at least 6 characters.',
+        tone: SnackBarTone.warning,
+      );
       return;
     }
 
@@ -58,19 +64,24 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
         UserAttributes(password: password),
       );
       if (!mounted) return;
-      showAppSnackBar(context, 'Password updated. Please sign in.',
-          tone: SnackBarTone.success);
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        AppRoutes.login,
-        (route) => false,
+      showAppSnackBar(
+        context,
+        'Password updated. Please sign in.',
+        tone: SnackBarTone.success,
       );
+      Navigator.of(
+        context,
+      ).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
     } on AuthException catch (error) {
       if (!mounted) return;
       showAppSnackBar(context, error.message, tone: SnackBarTone.error);
     } catch (e, st) {
       if (!mounted) return;
-      showAppSnackBar(context, 'Something went wrong. Please try again.',
-          tone: SnackBarTone.error);
+      showAppSnackBar(
+        context,
+        'Something went wrong. Please try again.',
+        tone: SnackBarTone.error,
+      );
       assert(() {
         debugPrintStack(stackTrace: st, label: 'Reset password error');
         return true;
@@ -83,10 +94,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   }
 
   void _goToLogin() {
-    Navigator.of(context).pushNamedAndRemoveUntil(
-      AppRoutes.login,
-      (route) => false,
-    );
+    Navigator.of(
+      context,
+    ).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
   }
 
   @override
@@ -101,7 +111,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             final maxCard = constraints.maxWidth.clamp(0.0, 600.0);
             return Center(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 20,
+                ),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: maxCard),
                   child: Column(
@@ -115,8 +128,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         passwordController: _passwordController,
                         confirmController: _confirmController,
                         isSubmitting: _isSubmitting,
-                        onTogglePassword: () =>
-                            setState(() => _obscurePassword = !_obscurePassword),
+                        onTogglePassword: () => setState(
+                          () => _obscurePassword = !_obscurePassword,
+                        ),
                         onToggleConfirm: () =>
                             setState(() => _obscureConfirm = !_obscureConfirm),
                         onSubmit: _submit,
@@ -161,10 +175,9 @@ class _ResetBrandingHeader extends StatelessWidget {
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
           onTap: () {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              AppRoutes.login,
-              (route) => false,
-            );
+            Navigator.of(
+              context,
+            ).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
           },
           child: Column(
             children: [
@@ -172,7 +185,6 @@ class _ResetBrandingHeader extends StatelessWidget {
                 appName,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontFamily: 'Inter Tight',
                   fontSize: 36,
                   fontWeight: FontWeight.w600,
                   color: colors.primaryText,
@@ -184,7 +196,6 @@ class _ResetBrandingHeader extends StatelessWidget {
                 'Tap the title anytime to return to sign in.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontFamily: 'Inter',
                   fontSize: 13,
                   color: colors.secondaryText,
                   height: 1.35,
@@ -226,10 +237,7 @@ class _ResetFormCard extends StatelessWidget {
   InputDecoration _fieldDecoration(String label) {
     return InputDecoration(
       labelText: label,
-      labelStyle: TextStyle(
-        color: colors.secondaryText,
-        fontFamily: 'Inter',
-      ),
+      labelStyle: TextStyle(color: colors.secondaryText),
       filled: true,
       fillColor: colors.primaryBackground,
       border: OutlineInputBorder(
@@ -283,7 +291,6 @@ class _ResetFormCard extends StatelessWidget {
                       Text(
                         'Set a new password',
                         style: TextStyle(
-                          fontFamily: 'Inter Tight',
                           fontSize: 26,
                           fontWeight: FontWeight.w600,
                           color: colors.primaryText,
@@ -294,7 +301,6 @@ class _ResetFormCard extends StatelessWidget {
                       Text(
                         'Choose a strong password you have not used here before. You will sign in again after saving.',
                         style: TextStyle(
-                          fontFamily: 'Inter',
                           fontSize: 14,
                           height: 1.45,
                           color: colors.secondaryText,
@@ -370,11 +376,7 @@ class _ResetFormCard extends StatelessWidget {
                 ),
                 child: Text(
                   'Back to sign in',
-                  style: TextStyle(
-                    fontFamily: 'Inter Tight',
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                 ),
               ),
             ),
@@ -407,7 +409,6 @@ class _HintRow extends StatelessWidget {
           child: Text(
             text,
             style: TextStyle(
-              fontFamily: 'Inter',
               fontSize: 13,
               height: 1.35,
               color: colors.primaryText,

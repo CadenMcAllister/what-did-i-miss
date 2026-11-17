@@ -4,49 +4,27 @@ import '../theme/app_colors.dart';
 
 /// Theme-aware email field for login/create account forms.
 class LoginEmailField extends StatelessWidget {
-  const LoginEmailField({
-    super.key,
-    required this.controller,
-    this.decoration,
-    this.onSubmitted,
-  });
+  const LoginEmailField({super.key, required this.controller});
 
   final TextEditingController controller;
-  final InputDecoration? decoration;
-  final ValueChanged<String>? onSubmitted;
-
-  static InputDecoration _defaultDecoration(BuildContext context) {
-    final colors = AppColors.of(context);
-    return InputDecoration(
-      labelText: 'Email',
-      labelStyle: TextStyle(color: colors.secondaryText),
-      filled: true,
-      fillColor: colors.primaryBackground,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide.none,
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
-    final base = _defaultDecoration(context);
-    final effective = decoration != null
-        ? base.copyWith(
-            labelText: decoration!.labelText ?? base.labelText,
-            labelStyle: decoration!.labelStyle ?? base.labelStyle,
-            fillColor: decoration!.fillColor ?? base.fillColor,
-            filled: decoration!.filled ?? base.filled,
-            border: decoration!.border ?? base.border,
-          )
-        : base;
+    final colors = AppColors.of(context);
     return TextField(
       controller: controller,
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
-      onSubmitted: onSubmitted,
-      decoration: effective,
+      decoration: InputDecoration(
+        labelText: 'Email',
+        labelStyle: TextStyle(color: colors.secondaryText),
+        filled: true,
+        fillColor: colors.primaryBackground,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+      ),
     );
   }
 }
@@ -154,7 +132,6 @@ class LoginPrimaryButton extends StatelessWidget {
             : Text(
                 label,
                 style: const TextStyle(
-                  fontFamily: 'Inter Tight',
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),

@@ -1,9 +1,6 @@
-import 'dart:async';
-
 import 'package:app_links/app_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app_constants.dart';
 import 'app_route_observer.dart';
@@ -25,7 +22,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   ThemeMode _themeMode = ThemeMode.system;
   final AppState _appState = AppState();
-  StreamSubscription<AuthState>? _authSubscription;
 
   void _setThemeMode(ThemeMode mode) {
     setState(() => _themeMode = mode);
@@ -34,16 +30,13 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _authSubscription =
-        Supabase.instance.client.auth.onAuthStateChange.listen((_) {
-      if (mounted) setState(() {});
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) => _handleInitialAuthRedirect());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _handleInitialAuthRedirect(),
+    );
   }
 
   @override
   void dispose() {
-    _authSubscription?.cancel();
     _appState.dispose();
     super.dispose();
   }
@@ -68,7 +61,6 @@ class _MyAppState extends State<MyApp> {
     return AppStateScope(
       notifier: _appState,
       child: ThemeModeScope(
-        themeMode: _themeMode,
         setThemeMode: _setThemeMode,
         child: MaterialApp(
           navigatorKey: _navigatorKey,

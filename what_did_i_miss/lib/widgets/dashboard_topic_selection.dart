@@ -8,7 +8,8 @@ const int _kMaxSelectedTopics = 24;
 const int _kMaxCustomPool = 16;
 const int _kMaxLabelLength = 64;
 
-typedef TopicsUpdated = void Function(List<String> selected, List<String> customPool);
+typedef TopicsUpdated =
+    void Function(List<String> selected, List<String> customPool);
 
 /// Suggested chips, custom topic entry, and chip list — calls [onTopicsUpdated] with new lists.
 class DashboardTopicSelection extends StatefulWidget {
@@ -26,7 +27,8 @@ class DashboardTopicSelection extends StatefulWidget {
   final void Function(String message)? onNotifyUser;
 
   @override
-  State<DashboardTopicSelection> createState() => _DashboardTopicSelectionState();
+  State<DashboardTopicSelection> createState() =>
+      _DashboardTopicSelectionState();
 }
 
 class _DashboardTopicSelectionState extends State<DashboardTopicSelection> {
@@ -60,7 +62,9 @@ class _DashboardTopicSelectionState extends State<DashboardTopicSelection> {
       sel.remove(topic);
     } else {
       if (sel.length >= _kMaxSelectedTopics) {
-        widget.onNotifyUser?.call('You can select up to $_kMaxSelectedTopics topics.');
+        widget.onNotifyUser?.call(
+          'You can select up to $_kMaxSelectedTopics topics.',
+        );
         return;
       }
       sel.add(topic);
@@ -81,14 +85,18 @@ class _DashboardTopicSelectionState extends State<DashboardTopicSelection> {
       return;
     }
     if (pool.length >= _kMaxCustomPool) {
-      widget.onNotifyUser?.call('You can add up to $_kMaxCustomPool custom topics.');
+      widget.onNotifyUser?.call(
+        'You can add up to $_kMaxCustomPool custom topics.',
+      );
       return;
     }
     pool.add(label);
     if (sel.length < _kMaxSelectedTopics) {
       sel.add(label);
     } else {
-      widget.onNotifyUser?.call('Topic added but not selected (selection limit reached).');
+      widget.onNotifyUser?.call(
+        'Topic added but not selected (selection limit reached).',
+      );
     }
     _customController.clear();
     _emit(sel, pool);
@@ -109,7 +117,9 @@ class _DashboardTopicSelectionState extends State<DashboardTopicSelection> {
       sel.remove(label);
     } else {
       if (sel.length >= _kMaxSelectedTopics) {
-        widget.onNotifyUser?.call('You can select up to $_kMaxSelectedTopics topics.');
+        widget.onNotifyUser?.call(
+          'You can select up to $_kMaxSelectedTopics topics.',
+        );
         return;
       }
       sel.add(label);
@@ -128,51 +138,28 @@ class _DashboardTopicSelectionState extends State<DashboardTopicSelection> {
     const chipLabelOnPrimary = Color(0xFFFFFFFF);
 
     TextStyle chipLabelFor(bool isSelected) => TextStyle(
-          fontFamily: 'Inter Tight',
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: isSelected ? chipLabelOnPrimary : colors.primaryText,
-        );
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      color: isSelected ? chipLabelOnPrimary : colors.primaryText,
+    );
 
     return Material(
       color: colors.secondaryBackground,
       borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Topics for your summary',
+              'Topics',
               style: TextStyle(
-                fontFamily: 'Inter Tight',
                 fontSize: 16,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
                 color: colors.primaryText,
               ),
             ),
-            const SizedBox(height: 4),
-            Text(
-              'Suggestions below; add your own topics. Choices are saved to your account and load again next time.',
-              style: TextStyle(
-                fontFamily: 'Inter Tight',
-                fontSize: 13,
-                fontWeight: FontWeight.w400,
-                height: 1.35,
-                color: colors.secondaryText,
-              ),
-            ),
-            const SizedBox(height: 14),
-            Text(
-              'Suggested',
-              style: TextStyle(
-                fontFamily: 'Inter Tight',
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: colors.secondaryText,
-              ),
-            ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -199,10 +186,7 @@ class _DashboardTopicSelectionState extends State<DashboardTopicSelection> {
                     }),
                     side: WidgetStateBorderSide.resolveWith((states) {
                       if (states.contains(WidgetState.selected)) {
-                        return BorderSide(
-                          color: colors.primary,
-                          width: 2,
-                        );
+                        return BorderSide(color: colors.primary, width: 2);
                       }
                       return BorderSide(
                         color: colors.primaryText.withValues(alpha: 0.14),
@@ -212,11 +196,10 @@ class _DashboardTopicSelectionState extends State<DashboardTopicSelection> {
                   ),
               ],
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 16),
             Text(
-              'Custom topics',
+              'Custom',
               style: TextStyle(
-                fontFamily: 'Inter Tight',
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: colors.secondaryText,
@@ -224,7 +207,7 @@ class _DashboardTopicSelectionState extends State<DashboardTopicSelection> {
             ),
             const SizedBox(height: 8),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                   child: TextField(
@@ -232,20 +215,20 @@ class _DashboardTopicSelectionState extends State<DashboardTopicSelection> {
                     textInputAction: TextInputAction.done,
                     maxLength: _kMaxLabelLength,
                     style: TextStyle(
-                      fontFamily: 'Inter Tight',
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
                       color: colors.primaryText,
                     ),
                     decoration: InputDecoration(
                       counterText: '',
-                      hintText: 'e.g. Seattle city council',
+                      hintText: 'e.g. New Orleans city council',
                       hintStyle: TextStyle(
-                        fontFamily: 'Inter Tight',
                         color: colors.secondaryText.withValues(alpha: 0.8),
                       ),
                       filled: true,
-                      fillColor: colors.primaryBackground.withValues(alpha: 0.45),
+                      fillColor: colors.primaryBackground.withValues(
+                        alpha: 0.45,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide(
@@ -260,7 +243,10 @@ class _DashboardTopicSelectionState extends State<DashboardTopicSelection> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: colors.primary, width: 1.5),
+                        borderSide: BorderSide(
+                          color: colors.primary,
+                          width: 1.5,
+                        ),
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 14,
@@ -276,18 +262,17 @@ class _DashboardTopicSelectionState extends State<DashboardTopicSelection> {
                   style: FilledButton.styleFrom(
                     backgroundColor: colors.primary,
                     foregroundColor: colors.primaryText,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   child: const Text(
                     'Add',
-                    style: TextStyle(
-                      fontFamily: 'Inter Tight',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
                   ),
                 ),
               ],
@@ -303,17 +288,15 @@ class _DashboardTopicSelectionState extends State<DashboardTopicSelection> {
                       builder: (context) {
                         final isSel = selected.contains(label);
                         return InputChip(
-                          label: Text(
-                            label,
-                            style: chipLabelFor(isSel),
-                          ),
+                          label: Text(label, style: chipLabelFor(isSel)),
                           selected: isSel,
                           onSelected: (_) => _toggleCustomSelected(label),
                           onDeleted: () => _removeCustom(label),
                           deleteIconColor: isSel
                               ? chipLabelOnPrimary.withValues(alpha: 0.88)
                               : colors.primaryText.withValues(alpha: 0.5),
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
                           color: WidgetStateProperty.resolveWith((states) {
                             if (states.contains(WidgetState.selected)) {
                               return selectedChipBg;
@@ -338,16 +321,6 @@ class _DashboardTopicSelectionState extends State<DashboardTopicSelection> {
                 ],
               ),
             ],
-            const SizedBox(height: 8),
-            Text(
-              'Auto-saves a moment after you change selections.',
-              style: TextStyle(
-                fontFamily: 'Inter Tight',
-                fontSize: 11,
-                fontWeight: FontWeight.w500,
-                color: colors.secondaryText.withValues(alpha: 0.9),
-              ),
-            ),
           ],
         ),
       ),

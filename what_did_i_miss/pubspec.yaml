@@ -31,11 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   app_links: ^6.3.2
-  cupertino_icons: ^1.0.8
-  provider: ^6.1.2
   supabase_flutter: ^2.12.0
   flutter_markdown: ^0.7.7+1
 
@@ -62,14 +58,10 @@ flutter:
   uses-material-design: true
 
   fonts:
-    - family: Inter Tight
+    - family: Figtree
       fonts:
-        - asset: assets/fonts/InterTight-VariableFont_wght.ttf
-        - asset: assets/fonts/InterTight-Italic-VariableFont_wght.ttf
-    - family: Inter
-      fonts:
-        - asset: assets/fonts/Inter-VariableFont_opsz,wght.ttf
-        - asset: assets/fonts/Inter-Italic-VariableFont_opsz,wght.ttf
+        - asset: assets/fonts/Figtree-VariableFont_wght.ttf
+        - asset: assets/fonts/Figtree-Italic-VariableFont_wght.ttf
 
 
   # To add assets to your application, add an assets section, like this:

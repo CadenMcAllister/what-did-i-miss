@@ -33,10 +33,6 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
   SummaryReport? _report;
   Object? _error;
   bool _loading = true;
-  int _pollAttempt = 0;
-
-  static const _maxPolls = 40;
-  static const _pollDelay = Duration(milliseconds: 600);
 
   @override
   void initState() {
@@ -56,34 +52,15 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
     });
 
     try {
-      while (true) {
-        final row = await _service.fetchReportById(widget.reportId);
-        if (!mounted) return;
-
+      final row = await _service.fetchReportById(widget.reportId);
+      if (!mounted) return;
+      setState(() {
+        _report = row;
+        _loading = false;
         if (row == null) {
-          setState(() {
-            _report = null;
-            _loading = false;
-            _error = StateError('Report not found or you do not have access.');
-          });
-          return;
+          _error = StateError('Report not found or you do not have access.');
         }
-
-        final stillProcessing =
-            row.status == 'processing' && _pollAttempt < _maxPolls;
-        if (stillProcessing) {
-          _pollAttempt++;
-          await Future<void>.delayed(_pollDelay);
-          if (!mounted) return;
-          continue;
-        }
-
-        setState(() {
-          _report = row;
-          _loading = false;
-        });
-        return;
-      }
+      });
     } catch (e, st) {
       debugPrint('SummaryReportPage load error: $e\n$st');
       if (!mounted) return;
@@ -107,22 +84,17 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
   ) {
     final theme = Theme.of(context);
     final divider = colors.secondaryText.withValues(alpha: 0.22);
-    final quoteBg =
-        colors.secondaryBackground.withValues(alpha: isDark ? 0.55 : 0.75);
+    final quoteBg = colors.secondaryBackground.withValues(
+      alpha: isDark ? 0.55 : 0.75,
+    );
     final codeBg = colors.secondaryBackground;
     final codeBorder = colors.primary.withValues(alpha: 0.28);
 
     return MarkdownStyleSheet.fromTheme(theme).copyWith(
       blockSpacing: 14,
-      p: TextStyle(
-        fontFamily: 'Inter',
-        fontSize: 16,
-        height: 1.55,
-        color: colors.primaryText,
-      ),
+      p: TextStyle(fontSize: 16, height: 1.55, color: colors.primaryText),
       pPadding: const EdgeInsets.only(bottom: 2),
       h1: TextStyle(
-        fontFamily: 'Inter Tight',
         fontWeight: FontWeight.w700,
         fontSize: 26,
         height: 1.22,
@@ -130,7 +102,6 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
       ),
       h1Padding: const EdgeInsets.only(top: 4, bottom: 10),
       h2: TextStyle(
-        fontFamily: 'Inter Tight',
         fontWeight: FontWeight.w600,
         fontSize: 20,
         height: 1.28,
@@ -138,7 +109,6 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
       ),
       h2Padding: const EdgeInsets.only(top: 18, bottom: 8),
       h3: TextStyle(
-        fontFamily: 'Inter Tight',
         fontWeight: FontWeight.w600,
         fontSize: 17,
         height: 1.3,
@@ -146,7 +116,6 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
       ),
       h3Padding: const EdgeInsets.only(top: 14, bottom: 6),
       h4: TextStyle(
-        fontFamily: 'Inter Tight',
         fontWeight: FontWeight.w600,
         fontSize: 16,
         height: 1.32,
@@ -154,15 +123,10 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
       ),
       h4Padding: const EdgeInsets.only(top: 12, bottom: 4),
       em: TextStyle(
-        fontFamily: 'Inter',
         fontStyle: FontStyle.italic,
         color: colors.primaryText.withValues(alpha: 0.92),
       ),
-      strong: TextStyle(
-        fontFamily: 'Inter',
-        fontWeight: FontWeight.w700,
-        color: colors.primaryText,
-      ),
+      strong: TextStyle(fontWeight: FontWeight.w700, color: colors.primaryText),
       code: TextStyle(
         fontFamily: 'monospace',
         fontSize: 13.5,
@@ -177,7 +141,6 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
         border: Border.all(color: codeBorder),
       ),
       blockquote: TextStyle(
-        fontFamily: 'Inter',
         fontSize: 15,
         height: 1.48,
         color: colors.secondaryText,
@@ -187,25 +150,19 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
       blockquoteDecoration: BoxDecoration(
         color: quoteBg,
         borderRadius: BorderRadius.circular(8),
-        border: Border(
-          left: BorderSide(color: colors.primary, width: 3),
-        ),
+        border: Border(left: BorderSide(color: colors.primary, width: 3)),
       ),
       listIndent: 22,
       listBullet: TextStyle(
-        fontFamily: 'Inter',
         fontSize: 16,
         height: 1.5,
         color: colors.primaryText,
       ),
       listBulletPadding: const EdgeInsets.only(right: 8, top: 2),
       horizontalRuleDecoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(width: 1, color: divider),
-        ),
+        border: Border(top: BorderSide(width: 1, color: divider)),
       ),
       a: TextStyle(
-        fontFamily: 'Inter',
         color: colors.primary,
         fontWeight: FontWeight.w600,
         decoration: TextDecoration.underline,
@@ -216,13 +173,11 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
         color: colors.primaryBackground.withValues(alpha: isDark ? 0.35 : 0.65),
       ),
       tableHead: TextStyle(
-        fontFamily: 'Inter Tight',
         fontWeight: FontWeight.w700,
         fontSize: 14,
         color: colors.primaryText,
       ),
       tableBody: TextStyle(
-        fontFamily: 'Inter',
         fontSize: 14,
         height: 1.42,
         color: colors.primaryText,
@@ -238,10 +193,7 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
     return Scaffold(
       backgroundColor: colors.primaryBackground,
       appBar: AppBar(
-        title: const Text(
-          'Your summary',
-          style: TextStyle(fontFamily: 'Inter Tight'),
-        ),
+        title: const Text('Your summary'),
         backgroundColor: colors.tertiary,
         foregroundColor: colors.primaryText,
         elevation: 0,
@@ -249,10 +201,7 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
           if (!_loading && widget.reportId.isNotEmpty)
             IconButton(
               tooltip: 'Refresh',
-              onPressed: () {
-                _pollAttempt = 0;
-                unawaited(_load());
-              },
+              onPressed: () => unawaited(_load()),
               icon: const Icon(Icons.refresh),
             ),
         ],
@@ -261,18 +210,14 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
     );
   }
 
-  Widget _buildBody(
-    BuildContext context,
-    AppColors colors,
-    bool isDark,
-  ) {
+  Widget _buildBody(BuildContext context, AppColors colors, bool isDark) {
     if (widget.reportId.isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Text(
             'Missing report id.',
-            style: TextStyle(color: colors.error, fontFamily: 'Inter Tight'),
+            style: TextStyle(color: colors.error),
             textAlign: TextAlign.center,
           ),
         ),
@@ -288,10 +233,7 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
             const SizedBox(height: 16),
             Text(
               'Loading your saved summary from your account…',
-              style: TextStyle(
-                fontFamily: 'Inter Tight',
-                color: colors.secondaryText,
-              ),
+              style: TextStyle(color: colors.secondaryText),
             ),
           ],
         ),
@@ -309,18 +251,12 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
               const SizedBox(height: 12),
               Text(
                 _error.toString(),
-                style: TextStyle(
-                  fontFamily: 'Inter Tight',
-                  color: colors.primaryText,
-                ),
+                style: TextStyle(color: colors.primaryText),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
               FilledButton(
-                onPressed: () {
-                  _pollAttempt = 0;
-                  unawaited(_load());
-                },
+                onPressed: () => unawaited(_load()),
                 child: const Text('Try again'),
               ),
             ],
@@ -337,7 +273,9 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
     final rawMd = report.resultMarkdown ?? '';
     final md = _normalizeMarkdownForDisplay(rawMd);
     final sheet = _markdownStyle(context, colors, isDark);
-    final cardFill = colors.secondaryBackground.withValues(alpha: isDark ? 0.42 : 0.55);
+    final cardFill = colors.secondaryBackground.withValues(
+      alpha: isDark ? 0.42 : 0.55,
+    );
     final cardBorder = colors.tertiary.withValues(alpha: 0.55);
 
     return LayoutBuilder(
@@ -355,7 +293,6 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
                   Text(
                     _periodLabel(report),
                     style: TextStyle(
-                      fontFamily: 'Inter Tight',
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: colors.secondaryText,
@@ -371,7 +308,6 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
                         label: Text('Status: ${report.status}'),
                         backgroundColor: colors.secondaryBackground,
                         labelStyle: TextStyle(
-                          fontFamily: 'Inter Tight',
                           fontSize: 13,
                           color: colors.primaryText,
                         ),
@@ -383,7 +319,6 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
                     Text(
                       'Topics: ${report.topics.join(', ')}',
                       style: TextStyle(
-                        fontFamily: 'Inter',
                         fontSize: 14,
                         height: 1.35,
                         color: colors.secondaryText,
@@ -394,10 +329,7 @@ class _SummaryReportPageState extends State<SummaryReportPage> {
                   if (md.isEmpty)
                     Text(
                       'This report has no markdown body yet (status: ${report.status}).',
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        color: colors.secondaryText,
-                      ),
+                      style: TextStyle(color: colors.secondaryText),
                     )
                   else ...[
                     Material(

@@ -4,8 +4,11 @@ import '../theme/app_colors.dart';
 
 enum SnackBarTone { info, success, warning, error }
 
-void showAppSnackBar(BuildContext context, String message,
-    {SnackBarTone tone = SnackBarTone.info}) {
+void showAppSnackBar(
+  BuildContext context,
+  String message, {
+  SnackBarTone tone = SnackBarTone.info,
+}) {
   final Color backgroundColor;
   final colors = AppColors.of(context);
   final IconData icon;
@@ -33,9 +36,7 @@ void showAppSnackBar(BuildContext context, String message,
       backgroundColor: backgroundColor,
       behavior: SnackBarBehavior.floating,
       elevation: 8,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       content: Row(
         children: [
           Icon(icon, color: colors.primaryText),
@@ -44,7 +45,6 @@ void showAppSnackBar(BuildContext context, String message,
             child: Text(
               message,
               style: TextStyle(
-                fontFamily: 'Inter Tight',
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: colors.primaryText,

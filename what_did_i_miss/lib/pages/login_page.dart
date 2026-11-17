@@ -10,13 +10,9 @@ import '../widgets/snackbars.dart';
 /// Returns true if [email] looks like a valid email address.
 bool _isValidEmail(String email) {
   if (email.isEmpty) return false;
-  return RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(email);
-}
-
-/// Returns the part of [email] before the @ for use as display name in Supabase auth.
-String _displayNameFromEmail(String email) {
-  if (email.isEmpty || !email.contains('@')) return email;
-  return email.split('@').first;
+  return RegExp(
+    r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+  ).hasMatch(email);
 }
 
 class LoginPage extends StatefulWidget {
@@ -35,7 +31,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _loginEmailController = TextEditingController();
-  final TextEditingController _loginPasswordController = TextEditingController();
+  final TextEditingController _loginPasswordController =
+      TextEditingController();
 
   @override
   void dispose() {
@@ -48,8 +45,9 @@ class _LoginPageState extends State<LoginPage> {
 
   void _onAuthError(Object e, StackTrace st, String debugLabel) {
     if (!mounted) return;
-    final message =
-        e is Exception ? e.toString() : 'Something went wrong. Please try again.';
+    final message = e is Exception
+        ? e.toString()
+        : 'Something went wrong. Please try again.';
     showAppSnackBar(context, message, tone: SnackBarTone.error);
     assert(() {
       debugPrintStack(stackTrace: st, label: debugLabel);
@@ -80,13 +78,19 @@ class _LoginPageState extends State<LoginPage> {
     final password = _passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
-      showAppSnackBar(context, 'Email and password are required.',
-          tone: SnackBarTone.warning);
+      showAppSnackBar(
+        context,
+        'Email and password are required.',
+        tone: SnackBarTone.warning,
+      );
       return;
     }
     if (!_isValidEmail(email)) {
-      showAppSnackBar(context, 'Please enter a valid email address.',
-          tone: SnackBarTone.warning);
+      showAppSnackBar(
+        context,
+        'Please enter a valid email address.',
+        tone: SnackBarTone.warning,
+      );
       return;
     }
 
@@ -95,16 +99,17 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
-      final displayName = _displayNameFromEmail(email);
       final response = await Supabase.instance.client.auth.signUp(
         email: email,
         password: password,
-        data: {'display_name': displayName},
       );
       if (!mounted) return;
       if (response.session != null) {
-        showAppSnackBar(context, 'Account created successfully.',
-            tone: SnackBarTone.success);
+        showAppSnackBar(
+          context,
+          'Account created successfully.',
+          tone: SnackBarTone.success,
+        );
         return;
       }
       try {
@@ -112,23 +117,21 @@ class _LoginPageState extends State<LoginPage> {
           email: email,
           password: password,
         );
-        final user = Supabase.instance.client.auth.currentUser;
-        final existingName = user?.userMetadata?['display_name'] as String?;
-        if (user != null &&
-            (existingName == null || existingName.isEmpty)) {
-          await Supabase.instance.client.auth.updateUser(
-            UserAttributes(data: {'display_name': _displayNameFromEmail(email)}),
-          );
-        }
         if (!mounted) return;
-        showAppSnackBar(context, 'Account already exists, please log in.',
-            tone: SnackBarTone.warning);
+        showAppSnackBar(
+          context,
+          'Account already exists, please log in.',
+          tone: SnackBarTone.warning,
+        );
         return;
       } on AuthException {
         if (!mounted) return;
       }
-      showAppSnackBar(context, 'Check your email to confirm your account.',
-          tone: SnackBarTone.info);
+      showAppSnackBar(
+        context,
+        'Check your email to confirm your account.',
+        tone: SnackBarTone.info,
+      );
     } on AuthException catch (error) {
       if (!mounted) return;
       final message = error.message.toLowerCase();
@@ -136,8 +139,11 @@ class _LoginPageState extends State<LoginPage> {
           message.contains('already registered') ||
           message.contains('already exists') ||
           message.contains('duplicate')) {
-        showAppSnackBar(context, 'That account already exists.',
-            tone: SnackBarTone.warning);
+        showAppSnackBar(
+          context,
+          'That account already exists.',
+          tone: SnackBarTone.warning,
+        );
         return;
       }
       showAppSnackBar(context, error.message, tone: SnackBarTone.error);
@@ -157,13 +163,19 @@ class _LoginPageState extends State<LoginPage> {
     final password = _loginPasswordController.text;
 
     if (email.isEmpty || password.isEmpty) {
-      showAppSnackBar(context, 'Email and password are required.',
-          tone: SnackBarTone.warning);
+      showAppSnackBar(
+        context,
+        'Email and password are required.',
+        tone: SnackBarTone.warning,
+      );
       return;
     }
     if (!_isValidEmail(email)) {
-      showAppSnackBar(context, 'Please enter a valid email address.',
-          tone: SnackBarTone.warning);
+      showAppSnackBar(
+        context,
+        'Please enter a valid email address.',
+        tone: SnackBarTone.warning,
+      );
       return;
     }
 
@@ -176,19 +188,13 @@ class _LoginPageState extends State<LoginPage> {
         email: email,
         password: password,
       );
-      // Ensure display_name is set in auth user metadata (e.g. for existing users).
-      final user = Supabase.instance.client.auth.currentUser;
-      final existingName = user?.userMetadata?['display_name'] as String?;
-      if (user != null &&
-          (existingName == null || existingName.isEmpty)) {
-        await Supabase.instance.client.auth.updateUser(
-          UserAttributes(data: {'display_name': _displayNameFromEmail(email)}),
-        );
-      }
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
-      showAppSnackBar(context, 'Logged in successfully.',
-          tone: SnackBarTone.success);
+      showAppSnackBar(
+        context,
+        'Logged in successfully.',
+        tone: SnackBarTone.success,
+      );
     } on AuthException catch (error) {
       if (!mounted) return;
       showAppSnackBar(context, error.message, tone: SnackBarTone.error);
@@ -207,13 +213,19 @@ class _LoginPageState extends State<LoginPage> {
     final email = _loginEmailController.text.trim();
 
     if (email.isEmpty) {
-      showAppSnackBar(context, 'Enter your email to reset your password.',
-          tone: SnackBarTone.warning);
+      showAppSnackBar(
+        context,
+        'Enter your email to reset your password.',
+        tone: SnackBarTone.warning,
+      );
       return;
     }
     if (!_isValidEmail(email)) {
-      showAppSnackBar(context, 'Please enter a valid email address.',
-          tone: SnackBarTone.warning);
+      showAppSnackBar(
+        context,
+        'Please enter a valid email address.',
+        tone: SnackBarTone.warning,
+      );
       return;
     }
 
@@ -227,8 +239,11 @@ class _LoginPageState extends State<LoginPage> {
         redirectTo: authRedirectUrl,
       );
       if (!mounted) return;
-      showAppSnackBar(context, 'Password reset email sent.',
-          tone: SnackBarTone.success);
+      showAppSnackBar(
+        context,
+        'Password reset email sent.',
+        tone: SnackBarTone.success,
+      );
     } on AuthException catch (error) {
       if (!mounted) return;
       showAppSnackBar(context, error.message, tone: SnackBarTone.error);
@@ -277,10 +292,7 @@ class _LoginHeader extends StatelessWidget {
         color: AppColors.of(context).primaryBackground,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 8,
-          ),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 8),
         ],
       ),
       child: MouseRegion(
@@ -290,7 +302,6 @@ class _LoginHeader extends StatelessWidget {
           child: Text(
             appName,
             style: TextStyle(
-              fontFamily: 'Inter Tight',
               fontSize: 44,
               fontWeight: FontWeight.w600,
               color: AppColors.of(context).primaryText,
@@ -398,15 +409,12 @@ class _CreateAccountTab extends StatelessWidget {
                 color: AppColors.of(context).secondaryText,
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
-                fontFamily: 'Inter',
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
-            child: LoginEmailField(
-              controller: state._emailController,
-            ),
+            child: LoginEmailField(controller: state._emailController),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
@@ -460,15 +468,12 @@ class _LoginTab extends StatelessWidget {
                 color: AppColors.of(context).secondaryText,
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
-                fontFamily: 'Inter',
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
-            child: LoginEmailField(
-              controller: state._loginEmailController,
-            ),
+            child: LoginEmailField(controller: state._loginEmailController),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
@@ -500,14 +505,16 @@ class _LoginTab extends StatelessWidget {
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     visualDensity: VisualDensity.compact,
                   ),
-                  onPressed: state._isResettingPassword ? null : () => state._sendPasswordReset(),
+                  onPressed: state._isResettingPassword
+                      ? null
+                      : () => state._sendPasswordReset(),
                   child: state._isResettingPassword
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Forgot password?'),
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text('Forgot password?'),
                 ),
               ),
             ),

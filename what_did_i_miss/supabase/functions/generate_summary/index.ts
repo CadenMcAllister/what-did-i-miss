@@ -9,13 +9,8 @@ const corsHeaders: Record<string, string> = {
 };
 
 type TopicSummary =
-  | { topic: string; summary: string; status: number | null; responseBody: null }
-  | {
-      topic: string;
-      error: string;
-      status: number | null;
-      responseBody: string | null;
-    };
+  | { topic: string; summary: string }
+  | { topic: string; error: string };
 
 /** Normalize to YYYY-MM-DD (Linkup rejects datetimes / equal from+to). */
 function toIsoDateOnly(raw: string): string | null {
@@ -216,8 +211,6 @@ Deno.serve(async (req) => {
 
     let data: { answer?: string } | null = null;
     let fetchError: string | null = null;
-    let status: number | null = null;
-    let responseBody: string | null = null;
 
     try {
       const response = await fetch("https://api.linkup.so/v1/search", {
@@ -234,16 +227,14 @@ Deno.serve(async (req) => {
           ...dateParams,
         }),
       });
-      status = response.status;
       const text = await response.text();
-      responseBody = text;
       try {
         data = JSON.parse(text) as { answer?: string };
       } catch (e) {
         fetchError = `Failed to parse response: ${(e as Error).message}`;
       }
       if (!response.ok) {
-        fetchError = formatLinkupError(status, response.statusText, text);
+        fetchError = formatLinkupError(response.status, response.statusText, text);
         console.error("Linkup error:", topic, fetchError, text.slice(0, 800));
       }
     } catch (err) {
@@ -251,21 +242,11 @@ Deno.serve(async (req) => {
     }
 
     if (fetchError) {
-      summaries.push({
-        topic,
-        error: fetchError,
-        status,
-        responseBody:
-          responseBody && responseBody.length > 500
-            ? responseBody.substring(0, 500) + "..."
-            : responseBody,
-      });
+      summaries.push({ topic, error: fetchError });
     } else {
       summaries.push({
         topic,
         summary: stripLinkupCitationMarkers(data?.answer ?? ""),
-        status,
-        responseBody: null,
       });
     }
   }
@@ -307,21 +288,12 @@ Deno.serve(async (req) => {
         error: "Report generated but failed to save",
         details: updateErr.message,
         reportId,
-        markdown: md,
       },
       500,
     );
   }
 
-  return json(
-    {
-      reportId,
-      status: finalStatus,
-      markdown: md,
-      debug: summaries,
-    },
-    200,
-  );
+  return json({ reportId, status: finalStatus }, 200);
 });
 
 function json(payload: unknown, status: number): Response {

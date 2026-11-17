@@ -20,7 +20,10 @@ class SummaryReportsService {
     required DateTime start,
     required DateTime end,
   }) async {
-    final trimmed = topics.map((t) => t.trim()).where((t) => t.isNotEmpty).toList();
+    final trimmed = topics
+        .map((t) => t.trim())
+        .where((t) => t.isNotEmpty)
+        .toList();
     if (trimmed.isEmpty) {
       throw StateError('No topics to summarize');
     }
@@ -38,11 +41,7 @@ class SummaryReportsService {
     if (data is! Map) {
       throw FormatException('Unexpected response from generate_summary');
     }
-    final map = Map<String, dynamic>.from(data);
-    final id =
-        map['reportId'] as String? ??
-        map['report_id'] as String? ??
-        map['id'] as String?;
+    final id = data['reportId'] as String?;
     if (id == null || id.isEmpty) {
       throw FormatException('Missing report id in generate_summary response');
     }
@@ -64,17 +63,11 @@ class SummaryReportsService {
   Future<List<SummaryReport>> listMyRecentReports({int limit = 30}) async {
     final data = await _client
         .from('summary_reports')
-        .select(
-          'id, user_id, date_start, date_end, topics, status, result_markdown, created_at',
-        )
+        .select('id, date_start, date_end, topics, status')
         .order('created_at', ascending: false)
         .limit(limit);
     return data
-        .map(
-          (e) => SummaryReport.fromJson(
-            Map<String, dynamic>.from(e as Map),
-          ),
-        )
+        .map((e) => SummaryReport.fromJson(Map<String, dynamic>.from(e as Map)))
         .toList();
   }
 }

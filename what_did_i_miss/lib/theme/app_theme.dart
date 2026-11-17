@@ -6,7 +6,7 @@ class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
-      fontFamily: 'Inter Tight',
+      fontFamily: 'Figtree',
       colorScheme: const ColorScheme.light(
         primary: LightAppColors.primary,
         secondary: LightAppColors.secondary,
@@ -20,7 +20,7 @@ class AppTheme {
   static ThemeData get darkTheme {
     return ThemeData(
       useMaterial3: true,
-      fontFamily: 'Inter Tight',
+      fontFamily: 'Figtree',
       colorScheme: const ColorScheme.dark(
         primary: DarkAppColors.primary,
         secondary: DarkAppColors.secondary,

@@ -5,10 +5,8 @@ import '../theme/app_colors.dart';
 
 /// Fires when the user leaves all three segments (after a frame), with a parsed
 /// calendar date or a structural error. [date] is null if inputs are incomplete or invalid.
-typedef SegmentedDateCommitCallback = void Function({
-  required DateTime? date,
-  String? errorMessage,
-});
+typedef SegmentedDateCommitCallback =
+    void Function({required DateTime? date, String? errorMessage});
 
 /// Three tappable parts (MM / DD / YY) like `04/02/26`; focused segment is highlighted.
 class SegmentedMmDdYyField extends StatefulWidget {
@@ -116,10 +114,7 @@ class SegmentedMmDdYyFieldState extends State<SegmentedMmDdYyField> {
     final ds = _dayC.text.trim();
     final ys = _yearC.text.trim();
     if (ms.isEmpty || ds.isEmpty || ys.isEmpty) {
-      widget.onCommit(
-        date: null,
-        errorMessage: 'Enter month, day, and year',
-      );
+      widget.onCommit(date: null, errorMessage: 'Enter month, day, and year');
       return;
     }
     final month = int.tryParse(ms);
@@ -164,11 +159,10 @@ class SegmentedMmDdYyFieldState extends State<SegmentedMmDdYyField> {
 
   Widget _slash() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Text(
         '/',
         style: TextStyle(
-          fontFamily: 'Inter Tight',
           fontSize: 20,
           fontWeight: FontWeight.w600,
           color: widget.colors.secondaryText,
@@ -181,122 +175,116 @@ class SegmentedMmDdYyFieldState extends State<SegmentedMmDdYyField> {
   Widget build(BuildContext context) {
     final colors = widget.colors;
 
-    return Material(
-      color: colors.secondaryBackground,
-      borderRadius: BorderRadius.circular(12),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: Icon(
-                Icons.calendar_today_rounded,
-                size: 22,
-                color: colors.primary,
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.label,
-                    style: TextStyle(
-                      fontFamily: 'Inter Tight',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: colors.secondaryText,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Material(
+          color: colors.secondaryBackground,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  widget.label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: colors.secondaryText,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _SegmentBox(
+                      colors: colors,
+                      label: 'Month',
+                      controller: _monthC,
+                      focusNode: _monthF,
+                      textInputAction: TextInputAction.next,
+                      onTap: () {
+                        _monthF.requestFocus();
+                        WidgetsBinding.instance.addPostFrameCallback(
+                          (_) => _selectAll(_monthC),
+                        );
+                      },
+                      onChanged: (v) {
+                        if (v.length >= 2) _dayF.requestFocus();
+                      },
+                      onSubmitted: (_) {
+                        _dayF.requestFocus();
+                        WidgetsBinding.instance.addPostFrameCallback(
+                          (_) => _selectAll(_dayC),
+                        );
+                      },
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      _SegmentBox(
-                        colors: colors,
-                        label: 'Month',
-                        controller: _monthC,
-                        focusNode: _monthF,
-                        textInputAction: TextInputAction.next,
-                        onTap: () {
-                          _monthF.requestFocus();
-                          WidgetsBinding.instance
-                              .addPostFrameCallback((_) => _selectAll(_monthC));
-                        },
-                        onChanged: (v) {
-                          if (v.length >= 2) _dayF.requestFocus();
-                        },
-                        onSubmitted: (_) {
-                          _dayF.requestFocus();
-                          WidgetsBinding.instance
-                              .addPostFrameCallback((_) => _selectAll(_dayC));
-                        },
-                      ),
-                      _slash(),
-                      _SegmentBox(
-                        colors: colors,
-                        label: 'Day',
-                        controller: _dayC,
-                        focusNode: _dayF,
-                        textInputAction: TextInputAction.next,
-                        onTap: () {
-                          _dayF.requestFocus();
-                          WidgetsBinding.instance
-                              .addPostFrameCallback((_) => _selectAll(_dayC));
-                        },
-                        onChanged: (v) {
-                          if (v.length >= 2) _yearF.requestFocus();
-                        },
-                        onSubmitted: (_) {
-                          _yearF.requestFocus();
-                          WidgetsBinding.instance
-                              .addPostFrameCallback((_) => _selectAll(_yearC));
-                        },
-                      ),
-                      _slash(),
-                      _SegmentBox(
-                        colors: colors,
-                        label: 'Year',
-                        controller: _yearC,
-                        focusNode: _yearF,
-                        textInputAction: widget.onLastSegmentNext != null
-                            ? TextInputAction.next
-                            : TextInputAction.done,
-                        onTap: () {
-                          _yearF.requestFocus();
-                          WidgetsBinding.instance
-                              .addPostFrameCallback((_) => _selectAll(_yearC));
-                        },
-                        onChanged: (_) {},
-                        onSubmitted: (_) {
-                          _scheduleCommitCheck();
-                          widget.onLastSegmentNext?.call();
-                        },
-                      ),
-                    ],
-                  ),
-                  if (widget.errorText != null) ...[
-                    const SizedBox(height: 8),
-                    Text(
-                      widget.errorText!,
-                      style: TextStyle(
-                        fontFamily: 'Inter Tight',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: colors.error,
-                        height: 1.25,
-                      ),
+                    _slash(),
+                    _SegmentBox(
+                      colors: colors,
+                      label: 'Day',
+                      controller: _dayC,
+                      focusNode: _dayF,
+                      textInputAction: TextInputAction.next,
+                      onTap: () {
+                        _dayF.requestFocus();
+                        WidgetsBinding.instance.addPostFrameCallback(
+                          (_) => _selectAll(_dayC),
+                        );
+                      },
+                      onChanged: (v) {
+                        if (v.length >= 2) _yearF.requestFocus();
+                      },
+                      onSubmitted: (_) {
+                        _yearF.requestFocus();
+                        WidgetsBinding.instance.addPostFrameCallback(
+                          (_) => _selectAll(_yearC),
+                        );
+                      },
+                    ),
+                    _slash(),
+                    _SegmentBox(
+                      colors: colors,
+                      label: 'Year',
+                      controller: _yearC,
+                      focusNode: _yearF,
+                      textInputAction: widget.onLastSegmentNext != null
+                          ? TextInputAction.next
+                          : TextInputAction.done,
+                      onTap: () {
+                        _yearF.requestFocus();
+                        WidgetsBinding.instance.addPostFrameCallback(
+                          (_) => _selectAll(_yearC),
+                        );
+                      },
+                      onChanged: (_) {},
+                      onSubmitted: (_) {
+                        _scheduleCommitCheck();
+                        widget.onLastSegmentNext?.call();
+                      },
                     ),
                   ],
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
+        if (widget.errorText != null) ...[
+          const SizedBox(height: 6),
+          Text(
+            widget.errorText!,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: colors.error,
+              height: 1.25,
+            ),
+          ),
+        ],
+      ],
     );
   }
 }
@@ -357,7 +345,6 @@ class _SegmentBox extends StatelessWidget {
               keyboardType: TextInputType.number,
               textInputAction: textInputAction,
               style: TextStyle(
-                fontFamily: 'Inter Tight',
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
                 color: colors.primaryText,
@@ -370,11 +357,10 @@ class _SegmentBox extends StatelessWidget {
                 counterText: '',
               ),
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              onTap: () =>
-                  controller.selection = TextSelection(
-                    baseOffset: 0,
-                    extentOffset: controller.text.length,
-                  ),
+              onTap: () => controller.selection = TextSelection(
+                baseOffset: 0,
+                extentOffset: controller.text.length,
+              ),
               onChanged: onChanged,
               onSubmitted: onSubmitted,
             ),

@@ -6,11 +6,7 @@ class FeatureCard extends StatelessWidget {
   final IconData icon;
   final String text;
 
-  const FeatureCard({
-    super.key,
-    required this.icon,
-    required this.text,
-  });
+  const FeatureCard({super.key, required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +20,12 @@ class FeatureCard extends StatelessWidget {
           color: AppColors.of(context).secondaryBackground,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.2),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -40,18 +36,13 @@ class FeatureCard extends StatelessWidget {
                 color: AppColors.of(context).primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(
-                icon,
-                size: 48,
-                color: AppColors.of(context).primary,
-              ),
+              child: Icon(icon, size: 48, color: AppColors.of(context).primary),
             ),
             const SizedBox(height: 24),
             Text(
               text,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontFamily: 'Inter Tight',
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
                 color: AppColors.of(context).primaryText,

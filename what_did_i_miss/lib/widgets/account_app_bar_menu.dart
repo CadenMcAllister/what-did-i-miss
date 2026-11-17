@@ -39,7 +39,14 @@ class AccountAppBarMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = Supabase.instance.client.auth.currentUser;
+    final auth = Supabase.instance.client.auth;
+    return StreamBuilder<AuthState>(
+      stream: auth.onAuthStateChange,
+      builder: (context, _) => _buildForUser(context, auth.currentUser),
+    );
+  }
+
+  Widget _buildForUser(BuildContext context, User? user) {
     if (user == null) return const SizedBox.shrink();
 
     final colors = AppColors.of(context);
@@ -95,7 +102,6 @@ class AccountAppBarMenu extends StatelessWidget {
                   Text(
                     'Dashboard',
                     style: TextStyle(
-                      fontFamily: 'Inter Tight',
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                       color: colors.primaryText,
@@ -125,16 +131,11 @@ class AccountAppBarMenu extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.logout_rounded,
-                    size: 22,
-                    color: colors.error,
-                  ),
+                  Icon(Icons.logout_rounded, size: 22, color: colors.error),
                   const SizedBox(width: 12),
                   Text(
                     'Sign out',
                     style: TextStyle(
-                      fontFamily: 'Inter Tight',
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                       color: colors.error,
@@ -170,7 +171,6 @@ class AccountAppBarMenu extends StatelessWidget {
                     child: Text(
                       initial,
                       style: TextStyle(
-                        fontFamily: 'Inter Tight',
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                         color: colors.primaryText,
@@ -186,7 +186,6 @@ class AccountAppBarMenu extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       style: TextStyle(
-                        fontFamily: 'Inter Tight',
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                         letterSpacing: -0.2,
